@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Menu, ShoppingCart, User, Search, ChevronDown, X } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const placeholderTexts = [
   "Search indoor plants...",
@@ -20,208 +21,151 @@ export default function Navbar() {
     const interval = setInterval(() => {
       i = (i + 1) % placeholderTexts.length;
       setPlaceholder(placeholderTexts[i]);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <nav className="navbar bg-base-100 shadow-md px-4 md:px-6 lg:px-8 sticky top-0 z-50">
-      {/* Small Screen: Hamburger & Logo */}
-      <div className="flex items-center gap-2 md:hidden">
-        <button
-          className="btn btn-ghost btn-sm"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-        <Link href="/" className="text-xl font-bold">
-          Ebrikkho
-        </Link>
-      </div>
-
-      {/* Medium Screen: Hamburger & Centered Logo */}
-      <div className="hidden md:flex lg:hidden items-center justify-between w-full">
-        <button
-          className="btn btn-ghost btn-sm"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-        <Link href="/" className="text-xl font-bold">
-          Ebrikkho
-        </Link>
-        <div className="w-8"></div> {/* Spacer for balance */}
-      </div>
-
-      {/* Desktop: Logo on Left */}
-      <div className="hidden lg:flex items-center lg:ml-4 xl:ml-8">
-        <Link href="/" className="text-xl font-bold">
-          Ebrikkho
-        </Link>
-      </div>
-
-      {/* Desktop Navigation - Centered */}
-      <div className="hidden lg:flex items-center justify-center flex-1 gap-2 lg:mx-4 xl:mx-8">
-        <Link href="/plants" className="btn btn-ghost btn-sm">
-          Plants
-        </Link>
-        <div className="dropdown dropdown-hover">
-          <label
-            tabIndex={0}
-            className="btn btn-ghost btn-sm flex items-center gap-1"
+    <nav className="bg-orange-100 text-neutral shadow sticky top-0 z-50">
+      {/* Top section */}
+      <div className="flex items-center justify-between px-4 py-2 md:px-6 lg:px-10 gap-2">
+        {/* Left: Logo & menu */}
+        <div className="flex items-center gap-2">
+          <button
+            className="btn btn-ghost btn-circle lg:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            Categories
-            <ChevronDown size={16} />
-          </label>
-          <ul
-            tabIndex={0}
-            className="dropdown-content z-[1] menu p-2 bg-base-100 shadow-md rounded-box w-52"
-          >
-            <li>
-              <Link href="/categories/indoor">Indoor Plants</Link>
-            </li>
-            <li>
-              <Link href="/categories/outdoor">Outdoor Plants</Link>
-            </li>
-            <li>
-              <Link href="/categories/vegetables">Vegetables & Fruits</Link>
-            </li>
-            <li>
-              <Link href="/categories/tools">Tools & Soil</Link>
-            </li>
-          </ul>
+            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logo.png"
+              alt="Ebrikkho Logo"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+          </Link>
         </div>
-        <Link href="/services" className="btn btn-ghost btn-sm">
-          Services
-        </Link>
-        <div className="dropdown dropdown-hover">
-          <label
-            tabIndex={0}
-            className="btn btn-ghost btn-sm flex items-center gap-1"
-          >
-            Community
-            <ChevronDown size={16} />
-          </label>
-          <ul
-            tabIndex={0}
-            className="dropdown-content z-[1] menu p-2 bg-base-100 shadow-md rounded-box w-52"
-          >
-            <li>
-              <Link href="/community/events">Events</Link>
-            </li>
-            <li>
-              <Link href="/community/blog">Blog</Link>
-            </li>
-            <li>
-              <Link href="/community/forum">Forum</Link>
-            </li>
-          </ul>
-        </div>
-      </div>
 
-      {/* Search, Account, Cart - Right Side */}
-      <div className="flex items-center gap-2 ml-auto lg:mr-4 xl:mr-8">
-        {/* Search bar for medium and large screens */}
-        <div className="hidden md:flex">
-          <div className="join">
+        {/* Middle: Search */}
+        <div className="flex-1 mx-2 max-w-md hidden sm:flex">
+          <div className="join w-full">
             <input
               type="text"
-              className="input input-bordered input-sm join-item w-48 md:w-56 lg:w-64"
               placeholder={placeholder}
+              className="input input-bordered join-item w-full placeholder:text-sm text-sm"
             />
-            <button className="btn btn-sm join-item btn-primary">
-              <Search size={16} />
+            <button className="btn join-item bg-primary text-white hover:bg-primary/90">
+              <Search size={18} />
             </button>
           </div>
         </div>
 
-        {/* Search icon for small screens */}
-        <div className="md:hidden">
-          <button className="btn btn-ghost btn-sm">
-            <Search size={20} />
+        {/* Right: Icons */}
+        <div className="flex items-center gap-2">
+          <button className="btn btn-ghost btn-circle">
+            <User size={20} />
+          </button>
+          <button className="btn btn-ghost btn-circle relative">
+            <ShoppingCart size={20} />
+            <span className="badge badge-sm badge-primary absolute -top-1 -right-1">
+              0
+            </span>
           </button>
         </div>
-
-        {/* Account */}
-        <button className="btn btn-ghost btn-sm">
-          <User size={20} />
-        </button>
-
-        {/* Cart */}
-        <button className="btn btn-ghost btn-sm relative">
-          <ShoppingCart size={20} />
-          <span className="badge badge-sm badge-primary absolute -top-1 -right-1">
-            0
-          </span>
-        </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Desktop nav links */}
+      <div className="hidden lg:flex justify-center bg-orange-200 border-t border-orange-300 text-neutral">
+        <div className="flex gap-6 py-2 text-sm font-medium">
+          <Link href="/plants" className="hover:text-primary">
+            Plants
+          </Link>
+          <div className="dropdown dropdown-hover">
+            <label
+              tabIndex={0}
+              className="cursor-pointer flex items-center gap-1 hover:text-primary"
+            >
+              Categories <ChevronDown size={14} />
+            </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] menu p-2 bg-orange-100 shadow rounded-box w-52"
+            >
+              <li>
+                <Link href="/categories/indoor">Indoor Plants</Link>
+              </li>
+              <li>
+                <Link href="/categories/outdoor">Outdoor Plants</Link>
+              </li>
+              <li>
+                <Link href="/categories/vegetables">Vegetables & Fruits</Link>
+              </li>
+              <li>
+                <Link href="/categories/tools">Tools & Soil</Link>
+              </li>
+            </ul>
+          </div>
+          <Link href="/services" className="hover:text-primary">
+            Services
+          </Link>
+          <Link href="/community/blog" className="hover:text-primary">
+            Blog
+          </Link>
+          <Link href="/community/forum" className="hover:text-primary">
+            Forum
+          </Link>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-base-100 shadow-lg z-50">
-          <ul className="menu menu-vertical p-4 gap-2">
+        <div className="lg:hidden bg-orange-100 text-neutral shadow-md px-4 pb-4">
+          <ul className="menu menu-vertical gap-2">
             <li>
-              <Link
-                href="/plants"
-                className="flex justify-between items-center"
-              >
-                Plants
-                <ChevronDown size={16} />
-              </Link>
-              <ul className="pl-4">
-                <li>
-                  <Link href="/plants/indoor">Indoor Plants</Link>
-                </li>
-                <li>
-                  <Link href="/plants/outdoor">Outdoor Plants</Link>
-                </li>
-              </ul>
+              <Link href="/plants">Plants</Link>
             </li>
             <li>
-              <Link
-                href="/categories"
-                className="flex justify-between items-center"
-              >
-                Categories
-                <ChevronDown size={16} />
-              </Link>
-              <ul className="pl-4">
-                <li>
-                  <Link href="/categories/indoor">Indoor Plants</Link>
-                </li>
-                <li>
-                  <Link href="/categories/outdoor">Outdoor Plants</Link>
-                </li>
-                <li>
-                  <Link href="/categories/vegetables">Vegetables & Fruits</Link>
-                </li>
-                <li>
-                  <Link href="/categories/tools">Tools & Soil</Link>
-                </li>
-              </ul>
+              <details open>
+                <summary>Categories</summary>
+                <ul className="pl-4">
+                  <li>
+                    <Link href="/categories/indoor">Indoor Plants</Link>
+                  </li>
+                  <li>
+                    <Link href="/categories/outdoor">Outdoor Plants</Link>
+                  </li>
+                  <li>
+                    <Link href="/categories/vegetables">
+                      Vegetables & Fruits
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/categories/tools">Tools & Soil</Link>
+                  </li>
+                </ul>
+              </details>
             </li>
             <li>
               <Link href="/services">Services</Link>
             </li>
             <li>
-              <Link
-                href="/community"
-                className="flex justify-between items-center"
-              >
-                Community
-                <ChevronDown size={16} />
-              </Link>
-              <ul className="pl-4">
-                <li>
-                  <Link href="/community/events">Events</Link>
-                </li>
-                <li>
-                  <Link href="/community/blog">Blog</Link>
-                </li>
-                <li>
-                  <Link href="/community/forum">Forum</Link>
-                </li>
-              </ul>
+              <details>
+                <summary>Community</summary>
+                <ul className="pl-4">
+                  <li>
+                    <Link href="/community/events">Events</Link>
+                  </li>
+                  <li>
+                    <Link href="/community/blog">Blog</Link>
+                  </li>
+                  <li>
+                    <Link href="/community/forum">Forum</Link>
+                  </li>
+                </ul>
+              </details>
             </li>
           </ul>
         </div>

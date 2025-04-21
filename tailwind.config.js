@@ -20,6 +20,30 @@ module.exports = {
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["light", "dark"],
+    themes: [
+      {
+        ebrikkho: {
+          primary: "#6BBF59",
+          secondary: "#A3D9A5",
+          accent: "#FFDC5E",
+          neutral: "#2A2E2D",
+          "base-100": "#ffffff",
+          "base-200": "#f3fdf4",
+          "base-300": "#e1f3e3",
+          info: "#88d1e8",
+          success: "#5FD068",
+          warning: "#F7C04A",
+          error: "#F05454",
+        },
+      },
+    ],
+    darkTheme: "dark",
+    base: true,
+    styled: true,
+    themes: true,
+    utils: true,
+    logs: false,
+    rtl: false,
+    prefix: "",
   },
 };
