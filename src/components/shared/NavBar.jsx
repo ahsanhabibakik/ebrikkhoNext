@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Menu, ShoppingCart, User, Search, ChevronDown, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import SearchModal from "./SearchModal";
 
 const placeholderTexts = [
   "Search indoor plants...",
@@ -12,9 +13,12 @@ const placeholderTexts = [
   "Shop air-purifying greens...",
 ];
 
-export default function Navbar() {
+export default function Navbar({ onCartOpen }) {
   const [placeholder, setPlaceholder] = useState(placeholderTexts[0]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   useEffect(() => {
     let i = 0;
@@ -25,68 +29,43 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // Only open modal when search icon is clicked
+    if (e.target.closest("button")) {
+      setIsSearchOpen(true);
+    }
+  };
+
   return (
-    <nav className="bg-orange-100 text-neutral shadow sticky top-0 z-50">
-      {/* Top section */}
+    <nav className="bg-orange-800 text-white shadow sticky top-0 z-50">
       <div className="flex items-center justify-between px-4 py-2 md:px-6 lg:px-10 gap-2">
         {/* Left: Logo & menu */}
         <div className="flex items-center gap-2">
           <button
-            className="btn btn-ghost btn-circle lg:hidden"
+            className="btn btn-ghost btn-circle lg:hidden text-white"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
 
           <Link href="/" className="flex items-center">
-            <Image
-              src="/logo.png"
-              alt="Ebrikkho Logo"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
+            <Image src="/logo.png" alt="Ebrikkho Logo" width={80} height={80} />
           </Link>
         </div>
 
-        {/* Middle: Search */}
-        <div className="flex-1 mx-2 max-w-md hidden sm:flex">
-          <div className="join w-full">
-            <input
-              type="text"
-              placeholder={placeholder}
-              className="input input-bordered join-item w-full placeholder:text-sm text-sm"
-            />
-            <button className="btn join-item bg-primary text-white hover:bg-primary/90">
-              <Search size={18} />
-            </button>
-          </div>
-        </div>
-
-        {/* Right: Icons */}
-        <div className="flex items-center gap-2">
-          <button className="btn btn-ghost btn-circle">
-            <User size={20} />
-          </button>
-          <button className="btn btn-ghost btn-circle relative">
-            <ShoppingCart size={20} />
-            <span className="badge badge-sm badge-primary absolute -top-1 -right-1">
-              0
-            </span>
-          </button>
-        </div>
-      </div>
-
-      {/* Desktop nav links */}
-      <div className="hidden lg:flex justify-center bg-orange-200 border-t border-orange-300 text-neutral">
-        <div className="flex gap-6 py-2 text-sm font-medium">
-          <Link href="/plants" className="hover:text-primary">
+        {/* Right: Navigation Links */}
+        <div className="hidden lg:flex items-center gap-6 text-sm font-medium">
+          <Link
+            href="/plants"
+            className="hover:text-orange-200 transition-colors"
+          >
             Plants
           </Link>
           <div className="dropdown dropdown-hover">
             <label
               tabIndex={0}
-              className="cursor-pointer flex items-center gap-1 hover:text-primary"
+              className="cursor-pointer flex items-center gap-1 hover:text-orange-200 transition-colors"
             >
               Categories <ChevronDown size={14} />
             </label>
@@ -108,15 +87,73 @@ export default function Navbar() {
               </li>
             </ul>
           </div>
-          <Link href="/services" className="hover:text-primary">
+          <Link
+            href="/services"
+            className="hover:text-orange-200 transition-colors"
+          >
             Services
           </Link>
-          <Link href="/community/blog" className="hover:text-primary">
+          <Link
+            href="/community/blog"
+            className="hover:text-orange-200 transition-colors"
+          >
             Blog
           </Link>
-          <Link href="/community/forum" className="hover:text-primary">
+          <Link
+            href="/community/forum"
+            className="hover:text-orange-200 transition-colors"
+          >
             Forum
           </Link>
+        </div>
+
+        {/* Right: Search and Icons */}
+        <div className="flex items-center gap-2">
+          {/* Search Bar */}
+          <form onSubmit={handleSearch} className="hidden lg:flex">
+            <div
+              className={`join w-full transition-all duration-200 ${
+                isSearchFocused ? "ring-2 ring-orange-300" : ""
+              }`}
+            >
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={placeholder}
+                className="input input-bordered join-item w-full placeholder:text-sm text-sm bg-white/10 text-white placeholder:text-white/70 focus:outline-none focus:bg-white/20"
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
+              />
+              <button
+                type="submit"
+                className="btn join-item bg-orange-600 hover:bg-orange-700 text-white border-orange-600"
+              >
+                <Search size={18} />
+              </button>
+            </div>
+          </form>
+
+          {/* Mobile Search Icon */}
+          <button
+            className="btn btn-ghost btn-circle lg:hidden"
+            onClick={() => setIsSearchOpen(true)}
+          >
+            <Search size={20} />
+          </button>
+
+          <button className="btn btn-ghost btn-circle">
+            <User size={20} />
+          </button>
+          <button
+            className="btn btn-ghost btn-circle relative"
+            onClick={onCartOpen}
+          >
+            <ShoppingCart size={20} />
+            <span className="badge badge-sm badge-primary absolute -top-1 -right-1">
+              0
+            </span>
+          </button>
         </div>
       </div>
 
@@ -170,6 +207,12 @@ export default function Navbar() {
           </ul>
         </div>
       )}
+
+      {/* Search Modal */}
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
     </nav>
   );
 }
