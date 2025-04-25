@@ -19,6 +19,7 @@ export default function Navbar({ onCartOpen }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
   useEffect(() => {
     let i = 0;
@@ -31,7 +32,6 @@ export default function Navbar({ onCartOpen }) {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // Only open modal when search icon is clicked
     if (e.target.closest("button")) {
       setIsSearchOpen(true);
     }
@@ -62,30 +62,41 @@ export default function Navbar({ onCartOpen }) {
           >
             Plants
           </Link>
-          <div className="dropdown dropdown-hover">
-            <label
-              tabIndex={0}
-              className="cursor-pointer flex items-center gap-1 hover:text-orange-200 transition-colors"
+          <div className="relative">
+            <button
+              onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+              className="flex items-center gap-1 hover:text-orange-200 transition-colors"
             >
               Categories <ChevronDown size={14} />
-            </label>
-            <ul
-              tabIndex={0}
-              className="dropdown-content z-[1] menu p-2 bg-orange-100 shadow rounded-box w-52"
-            >
-              <li>
-                <Link href="/categories/indoor">Indoor Plants</Link>
-              </li>
-              <li>
-                <Link href="/categories/outdoor">Outdoor Plants</Link>
-              </li>
-              <li>
-                <Link href="/categories/vegetables">Vegetables & Fruits</Link>
-              </li>
-              <li>
-                <Link href="/categories/tools">Tools & Soil</Link>
-              </li>
-            </ul>
+            </button>
+            {isCategoriesOpen && (
+              <div className="absolute top-full left-0 mt-2 w-52 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-50">
+                <Link
+                  href="/categories/indoor"
+                  className="block px-4 py-2 hover:bg-orange-50"
+                >
+                  Indoor Plants
+                </Link>
+                <Link
+                  href="/categories/outdoor"
+                  className="block px-4 py-2 hover:bg-orange-50"
+                >
+                  Outdoor Plants
+                </Link>
+                <Link
+                  href="/categories/vegetables"
+                  className="block px-4 py-2 hover:bg-orange-50"
+                >
+                  Vegetables & Fruits
+                </Link>
+                <Link
+                  href="/categories/tools"
+                  className="block px-4 py-2 hover:bg-orange-50"
+                >
+                  Tools & Soil
+                </Link>
+              </div>
+            )}
           </div>
           <Link
             href="/services"
@@ -102,6 +113,7 @@ export default function Navbar({ onCartOpen }) {
           <Link
             href="/community/forum"
             className="hover:text-orange-200 transition-colors"
+            onClick={() => setIsMenuOpen(false)}
           >
             Forum
           </Link>
@@ -142,9 +154,9 @@ export default function Navbar({ onCartOpen }) {
             <Search size={20} />
           </button>
 
-          <button className="btn btn-ghost btn-circle">
+          <Link href="/account" className="btn btn-ghost btn-circle">
             <User size={20} />
-          </button>
+          </Link>
           <button
             className="btn btn-ghost btn-circle relative"
             onClick={onCartOpen}
@@ -162,44 +174,81 @@ export default function Navbar({ onCartOpen }) {
         <div className="lg:hidden bg-orange-100 text-neutral shadow-md px-4 pb-4">
           <ul className="menu menu-vertical gap-2">
             <li>
-              <Link href="/plants">Plants</Link>
+              <Link href="/plants" onClick={() => setIsMenuOpen(false)}>
+                Plants
+              </Link>
             </li>
             <li>
-              <details open>
+              <details>
                 <summary>Categories</summary>
                 <ul className="pl-4">
                   <li>
-                    <Link href="/categories/indoor">Indoor Plants</Link>
+                    <Link
+                      href="/categories/indoor"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Indoor Plants
+                    </Link>
                   </li>
                   <li>
-                    <Link href="/categories/outdoor">Outdoor Plants</Link>
+                    <Link
+                      href="/categories/outdoor"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Outdoor Plants
+                    </Link>
                   </li>
                   <li>
-                    <Link href="/categories/vegetables">
+                    <Link
+                      href="/categories/vegetables"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       Vegetables & Fruits
                     </Link>
                   </li>
                   <li>
-                    <Link href="/categories/tools">Tools & Soil</Link>
+                    <Link
+                      href="/categories/tools"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Tools & Soil
+                    </Link>
                   </li>
                 </ul>
               </details>
             </li>
             <li>
-              <Link href="/services">Services</Link>
+              <Link href="/services" onClick={() => setIsMenuOpen(false)}>
+                Services
+              </Link>
             </li>
             <li>
               <details>
                 <summary>Community</summary>
                 <ul className="pl-4">
                   <li>
-                    <Link href="/community/events">Events</Link>
+                    <Link
+                      href="/community/events"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Events
+                    </Link>
                   </li>
                   <li>
-                    <Link href="/community/blog">Blog</Link>
+                    <Link
+                      href="/community/blog"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Blog
+                    </Link>
                   </li>
                   <li>
-                    <Link href="/community/forum">Forum</Link>
+                    <Link
+                      href="/community/forum"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Forum
+                    </Link>
                   </li>
                 </ul>
               </details>
