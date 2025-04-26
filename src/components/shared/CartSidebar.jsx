@@ -29,6 +29,7 @@ import {
   removeFromSaved,
 } from "@/redux/slices/cartSlice";
 import { products } from "@/data/products";
+import { useRouter } from "next/navigation";
 
 export default function CartSidebar() {
   const dispatch = useAppDispatch();
@@ -43,6 +44,8 @@ export default function CartSidebar() {
   const [inputCouponCode, setInputCouponCode] = useState("");
   const [freeShippingThreshold] = useState(5000); // Free shipping above 5000 BDT
   const [showAddedToCart, setShowAddedToCart] = useState({});
+
+  const router = useRouter();
 
   // Get related products based on cart items
   const getRelatedProducts = () => {
@@ -98,35 +101,33 @@ export default function CartSidebar() {
 
   return (
     <>
-      {/* Overlay */}
+      {/* Overlay with blur effect */}
       {isCartOpen && (
         <div
-          className="fixed inset-0 bg-black/20 bg-opacity-10 z-[998]"
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[998] transition-opacity duration-300"
           onClick={() => dispatch(toggleCart())}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar with improved design */}
       <div
-        className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-[999] ${
+        className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-xl transform transition-all duration-300 ease-in-out z-[999] ${
           isCartOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="h-full flex flex-col">
-          {/* Header */}
-          <div className="p-4 border-b flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Shopping Cart
-            </h2>
+          {/* Header with gradient background */}
+          <div className="p-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white flex justify-between items-center">
+            <h2 className="text-xl font-semibold">Shopping Cart</h2>
             <button
               onClick={() => dispatch(toggleCart())}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 hover:bg-white/10 rounded-full transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Cart Items */}
+          {/* Cart Items with improved styling */}
           <div className="flex-1 overflow-y-auto p-4">
             {cartItems.length === 0 && savedForLater.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center">
@@ -134,7 +135,7 @@ export default function CartSidebar() {
                 <p className="text-gray-600">Your cart is empty</p>
                 <Link
                   href="/products"
-                  className="mt-4 text-orange-600 hover:text-orange-700"
+                  className="mt-4 text-orange-600 hover:text-orange-700 font-medium"
                   onClick={() => dispatch(toggleCart())}
                 >
                   Continue Shopping
@@ -144,12 +145,14 @@ export default function CartSidebar() {
               <div className="space-y-6">
                 {/* Cart Items */}
                 {cartItems.length > 0 && (
-                  <div className="space-y-4">
-                    <h3 className="font-medium text-gray-900">Cart Items</h3>
+                  <div>
+                    <h3 className="font-medium text-gray-900 mb-4">
+                      Cart Items
+                    </h3>
                     {cartItems.map((item) => (
                       <div
                         key={item.id}
-                        className="flex gap-4 p-4 bg-gray-50 rounded-lg relative group hover:shadow-md transition-shadow"
+                        className="flex gap-4 p-4 bg-gray-50 rounded-lg relative group hover:shadow-md transition-all duration-300 mb-4"
                       >
                         <div className="relative w-20 h-20 flex-shrink-0">
                           <Image
@@ -184,7 +187,7 @@ export default function CartSidebar() {
                                   })
                                 )
                               }
-                              className="p-2 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 hover:text-gray-900"
+                              className="p-2 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 hover:text-gray-900 transition-colors"
                             >
                               <Minus className="w-4 h-4" />
                             </button>
@@ -200,14 +203,14 @@ export default function CartSidebar() {
                                   })
                                 )
                               }
-                              className="p-2 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 hover:text-gray-900"
+                              className="p-2 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 hover:text-gray-900 transition-colors"
                             >
                               <Plus className="w-4 h-4" />
                             </button>
                           </div>
                           <button
                             onClick={() => handleSaveForLater(item.id)}
-                            className="mt-2 text-sm text-orange-600 hover:text-orange-700 flex items-center gap-1"
+                            className="mt-2 text-sm text-orange-600 hover:text-orange-700 flex items-center gap-1 transition-colors"
                           >
                             <Clock className="w-4 h-4" />
                             Save for later
@@ -220,14 +223,14 @@ export default function CartSidebar() {
 
                 {/* Saved for Later Items */}
                 {savedForLater.length > 0 && (
-                  <div className="space-y-4">
-                    <h3 className="font-medium text-gray-900">
+                  <div>
+                    <h3 className="font-medium text-gray-900 mb-4">
                       Saved for Later
                     </h3>
                     {savedForLater.map((item) => (
                       <div
                         key={item.id}
-                        className="flex gap-4 p-4 bg-gray-50 rounded-lg relative group hover:shadow-md transition-shadow"
+                        className="flex gap-4 p-4 bg-gray-50 rounded-lg relative group hover:shadow-md transition-all duration-300 mb-4"
                       >
                         <div className="relative w-20 h-20 flex-shrink-0">
                           <Image
@@ -254,7 +257,7 @@ export default function CartSidebar() {
                           </p>
                           <button
                             onClick={() => dispatch(moveToCart(item.id))}
-                            className="text-sm text-orange-600 hover:text-orange-700 flex items-center gap-1"
+                            className="text-sm text-orange-600 hover:text-orange-700 flex items-center gap-1 transition-colors"
                           >
                             <ShoppingBag className="w-4 h-4" />
                             Move to cart
@@ -267,37 +270,35 @@ export default function CartSidebar() {
 
                 {/* Related Products */}
                 {relatedProducts.length > 0 && (
-                  <div className="space-y-4">
-                    <h3 className="font-medium text-gray-900">
-                      You May Also Like
+                  <div>
+                    <h3 className="font-medium text-gray-900 mb-4">
+                      You might also like
                     </h3>
                     <div className="grid grid-cols-2 gap-4">
                       {relatedProducts.map((product) => (
-                        <Link
+                        <div
                           key={product.id}
-                          href={`/products/${product.id}`}
-                          className="group"
-                          onClick={() => dispatch(toggleCart())}
+                          className="group cursor-pointer"
+                          onClick={() => {
+                            dispatch(toggleCart());
+                            router.push(`/products/${product.id}`);
+                          }}
                         >
-                          <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                            <div className="relative h-32">
-                              <Image
-                                src={product.image}
-                                alt={product.name}
-                                fill
-                                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                              />
-                            </div>
-                            <div className="p-3">
-                              <h4 className="font-medium text-gray-900 text-sm group-hover:text-orange-600 transition-colors">
-                                {product.name}
-                              </h4>
-                              <p className="text-orange-600 font-semibold text-sm">
-                                ৳{product.price.toLocaleString()}
-                              </p>
-                            </div>
+                          <div className="relative aspect-square mb-2">
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              fill
+                              className="object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
+                            />
                           </div>
-                        </Link>
+                          <h4 className="text-sm font-medium text-gray-900 group-hover:text-orange-600 transition-colors">
+                            {product.name}
+                          </h4>
+                          <p className="text-sm text-gray-600">
+                            ৳{product.price.toLocaleString()}
+                          </p>
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -306,33 +307,9 @@ export default function CartSidebar() {
             )}
           </div>
 
-          {/* Shipping Information */}
+          {/* Coupon Section with improved design */}
           {cartItems.length > 0 && (
-            <div className="border-t p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Truck className="w-5 h-5 text-orange-600" />
-                <h3 className="font-medium text-gray-900">Shipping</h3>
-              </div>
-              {getAmountNeededForFreeShipping() > 0 ? (
-                <div className="bg-orange-50 p-3 rounded-lg mb-4">
-                  <p className="text-sm text-orange-700">
-                    Add ৳{getAmountNeededForFreeShipping().toLocaleString()}{" "}
-                    more to get free shipping!
-                  </p>
-                </div>
-              ) : (
-                <div className="bg-green-50 p-3 rounded-lg mb-4">
-                  <p className="text-sm text-green-700">
-                    You've got free shipping!
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Coupon Code */}
-          {cartItems.length > 0 && (
-            <div className="border-t p-4">
+            <div className="border-t p-4 bg-gray-50">
               <div className="flex items-center gap-2 mb-2">
                 <Tag className="w-5 h-5 text-orange-600" />
                 <h3 className="font-medium text-gray-900">Apply Coupon</h3>
@@ -363,40 +340,45 @@ export default function CartSidebar() {
             </div>
           )}
 
-          {/* Footer */}
+          {/* Footer with improved design */}
           {cartItems.length > 0 && (
-            <div className="border-t p-4 space-y-4">
-              <div className="space-y-2">
+            <div className="border-t p-4 bg-white">
+              <div className="space-y-3 mb-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="text-gray-900">
+                  <span className="font-medium text-gray-900">
                     ৳{cartTotal.toLocaleString()}
                   </span>
                 </div>
                 {discount > 0 && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Discount</span>
-                    <span className="text-green-600">
-                      -৳{discount.toLocaleString()}
-                    </span>
+                  <div className="flex justify-between text-sm text-green-600">
+                    <span>Discount</span>
+                    <span>-৳{discount.toLocaleString()}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Shipping</span>
-                  <span className="text-gray-900">
-                    {shippingCost === 0
-                      ? "Free"
-                      : `৳${shippingCost.toLocaleString()}`}
+                  <span className="font-medium text-gray-900">
+                    {shippingCost === 0 ? (
+                      <span className="text-green-600">Free</span>
+                    ) : (
+                      `৳${shippingCost.toLocaleString()}`
+                    )}
                   </span>
                 </div>
-                <div className="flex justify-between font-medium text-lg">
+                {getAmountNeededForFreeShipping() > 0 && (
+                  <div className="text-sm text-orange-600 bg-orange-50 p-2 rounded-lg">
+                    Add ৳{getAmountNeededForFreeShipping().toLocaleString()}{" "}
+                    more for free shipping
+                  </div>
+                )}
+                <div className="flex justify-between text-lg font-semibold pt-3 border-t">
                   <span className="text-gray-900">Total</span>
                   <span className="text-orange-600">
                     ৳{getFinalTotal().toLocaleString()}
                   </span>
                 </div>
               </div>
-
               <div className="space-y-2">
                 <Link
                   href="/checkout"
