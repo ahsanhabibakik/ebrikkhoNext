@@ -232,7 +232,7 @@ export default function OrdersPage() {
                         <div className="space-y-2">
                           {order.items.map((item, index) => (
                             <div
-                              key={index}
+                              key={`${item.id}-${index}`}
                               className="flex justify-between text-sm"
                             >
                               <span className="text-gray-600">

@@ -261,16 +261,17 @@ export default function CheckoutPage() {
   const handlePlaceOrder = async () => {
     setIsProcessing(true);
     try {
-      // Format date in English numbers
-      const today = new Date();
-      const formattedDate = `${String(today.getMonth() + 1).padStart(
-        2,
-        "0"
-      )}/${String(today.getDate()).padStart(2, "0")}/${today.getFullYear()}`;
+      // Generate a unique order ID using timestamp and random string
+      const timestamp = Date.now();
+      const randomStr = Math.random()
+        .toString(36)
+        .substring(2, 8)
+        .toUpperCase();
+      const uniqueOrderId = `ORD-${timestamp}-${randomStr}`;
 
       // Create order details
       const orderDetails = {
-        orderNumber: `ORD-${Date.now()}`,
+        orderNumber: uniqueOrderId,
         date: new Date().toISOString(),
         customer: {
           name: shippingInfo.name,
@@ -291,11 +292,32 @@ export default function CheckoutPage() {
           shipping: shippingCost,
           total: getFinalTotal(),
         },
+        status: "Processing",
       };
 
-      console.log("Saving order details:", orderDetails); // Debug log
+      // Get existing orders
+      const existingOrders = localStorage.getItem("orders");
+      let orders = [];
+      try {
+        if (existingOrders) {
+          orders = JSON.parse(existingOrders);
+          if (!Array.isArray(orders)) {
+            orders = [];
+          }
+        }
+      } catch (error) {
+        console.error("Error parsing existing orders:", error);
+        orders = [];
+      }
+
+      // Add new order to the beginning of the array
+      orders.unshift(orderDetails);
+
+      // Save updated orders array
+      localStorage.setItem("orders", JSON.stringify(orders));
+
+      // Save current order details
       localStorage.setItem("lastOrderDetails", JSON.stringify(orderDetails));
-      console.log("Order details saved to localStorage"); // Debug log
 
       // Clear cart and redirect to success page
       dispatch(clearCart());

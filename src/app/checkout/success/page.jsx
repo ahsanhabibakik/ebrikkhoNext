@@ -35,81 +35,73 @@ export default function CheckoutSuccessPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Get order details from localStorage
-    const storedOrder = localStorage.getItem("lastOrderDetails");
-    console.log("Stored order data:", storedOrder); // Debug log
-
-    if (storedOrder) {
+    const fetchOrderDetails = () => {
       try {
-        const parsedOrder = JSON.parse(storedOrder);
-        console.log("Parsed order data:", parsedOrder); // Debug log
-
-        // Check if the order has valid data
-        if (
-          parsedOrder &&
-          parsedOrder.orderNumber &&
-          parsedOrder.items &&
-          parsedOrder.items.length > 0
-        ) {
-          // Add status to the order
-          const orderWithStatus = {
-            ...parsedOrder,
-            status: "Processing",
-          };
-
-          setOrderDetails(orderWithStatus);
-
-          // Also save to orders history
-          const existingOrders = localStorage.getItem("orders");
-          let orders = [];
-
-          try {
-            if (existingOrders) {
-              orders = JSON.parse(existingOrders);
-              // Ensure orders is an array
-              if (!Array.isArray(orders)) {
-                orders = [];
-              }
-            }
-
-            // Check if this order already exists in the orders array
-            const orderExists = orders.some(
-              (order) => order.orderNumber === orderWithStatus.orderNumber
-            );
-
-            if (!orderExists) {
-              // Add new order to the beginning of the array
-              orders.unshift(orderWithStatus);
-              // Save back to localStorage
-              localStorage.setItem("orders", JSON.stringify(orders));
-              console.log("Order saved to orders history:", orders); // Debug log
-            } else {
-              console.log("Order already exists in history"); // Debug log
-            }
-          } catch (error) {
-            console.error("Error handling orders history:", error);
-            // If there's an error, start fresh with just this order
-            localStorage.setItem("orders", JSON.stringify([orderWithStatus]));
-          }
-        } else {
-          console.error("Invalid order data structure:", parsedOrder); // Debug log
-          // Redirect to home if order data is invalid
+        // Get the last order details
+        const storedOrderDetails = localStorage.getItem("lastOrderDetails");
+        if (!storedOrderDetails) {
+          console.error("No order details found");
           router.push("/");
+          return;
         }
+
+        const parsedOrderDetails = JSON.parse(storedOrderDetails);
+        console.log("Retrieved order details:", parsedOrderDetails);
+
+        // Validate order details structure
+        if (
+          !parsedOrderDetails.orderNumber ||
+          !parsedOrderDetails.items ||
+          !Array.isArray(parsedOrderDetails.items)
+        ) {
+          console.error("Invalid order details structure:", parsedOrderDetails);
+          router.push("/");
+          return;
+        }
+
+        // Get existing orders
+        const existingOrders = localStorage.getItem("orders");
+        let orders = [];
+        try {
+          if (existingOrders) {
+            orders = JSON.parse(existingOrders);
+            if (!Array.isArray(orders)) {
+              orders = [];
+            }
+          }
+        } catch (error) {
+          console.error("Error parsing existing orders:", error);
+          orders = [];
+        }
+
+        // Remove any duplicate orders with the same order number
+        orders = orders.filter(
+          (order, index, self) =>
+            index === self.findIndex((o) => o.orderNumber === order.orderNumber)
+        );
+
+        // Check if order already exists
+        const orderExists = orders.some(
+          (order) => order.orderNumber === parsedOrderDetails.orderNumber
+        );
+        if (!orderExists) {
+          // Add new order to the beginning of the array
+          orders.unshift(parsedOrderDetails);
+          localStorage.setItem("orders", JSON.stringify(orders));
+        }
+
+        setOrderDetails(parsedOrderDetails);
+        dispatch(clearCart());
       } catch (error) {
-        console.error("Error parsing order data:", error);
-        // Redirect to home if parsing fails
+        console.error("Error processing order details:", error);
         router.push("/");
+      } finally {
+        setIsLoading(false);
       }
-    } else {
-      console.error("No order data found in localStorage"); // Debug log
-      // Redirect to home if no order data exists
-      router.push("/");
-    }
-    // Clear cart after successful checkout
-    localStorage.removeItem("cart");
-    setIsLoading(false);
-  }, [router]);
+    };
+
+    fetchOrderDetails();
+  }, [dispatch, router]);
 
   const handleDownloadPDF = async () => {
     setIsDownloading(true);
@@ -318,7 +310,7 @@ export default function CheckoutSuccessPage() {
               <div className="space-y-4">
                 {orderDetails.items.map((item, index) => (
                   <div
-                    key={index}
+                    key={`${item.id}-${index}`}
                     className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg"
                   >
                     <div className="flex-1">
