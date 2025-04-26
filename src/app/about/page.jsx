@@ -9,14 +9,44 @@ import {
   Calendar,
   ArrowRight,
 } from "lucide-react";
+import LeafPattern from "@/components/shared/LeafPattern";
 
 export default function AboutPage() {
+  // Additional leaves for a more intricate pattern
+  const additionalLeaves = [
+    { top: "10%", left: "20%", rotate: "20", size: 24 },
+    { top: "20%", right: "15%", rotate: "-25", size: 20 },
+    { bottom: "15%", left: "25%", rotate: "40", size: 22 },
+    { bottom: "25%", right: "20%", rotate: "-45", size: 18 },
+    { top: "35%", left: "10%", rotate: "5", size: 16 },
+    { top: "45%", right: "8%", rotate: "-15", size: 20 },
+    { bottom: "35%", left: "15%", rotate: "55", size: 22 },
+    { bottom: "45%", right: "12%", rotate: "-35", size: 18 },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative h-[500px] bg-orange-800">
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 bg-[url('/images/plants-bg.jpg')] bg-cover bg-center" />
+        <LeafPattern
+          opacity={15}
+          leafSizes={{
+            topLeft: 40,
+            topRight: 35,
+            bottomLeft: 30,
+            bottomRight: 38,
+          }}
+          leafPositions={{
+            topLeft: { top: "10%", left: "10%", rotate: "12" },
+            topRight: { top: "15%", right: "15%", rotate: "-12" },
+            bottomLeft: { bottom: "10%", left: "15%", rotate: "45" },
+            bottomRight: { bottom: "15%", right: "10%", rotate: "-30" },
+          }}
+          additionalLeaves={additionalLeaves}
+          color="white"
+        />
         <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
           <div className="text-center text-white max-w-3xl">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">

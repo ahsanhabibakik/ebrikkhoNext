@@ -2,6 +2,7 @@
 
 import { Leaf, Droplets, Scissors, Truck, Phone, Calendar } from "lucide-react";
 import Image from "next/image";
+import LeafPattern from "@/components/shared/LeafPattern";
 
 export default function ServicesPage() {
   const services = [
@@ -60,12 +61,41 @@ export default function ServicesPage() {
     },
   ];
 
+  // Additional leaves for a more intricate pattern
+  const additionalLeaves = [
+    { top: "12%", left: "18%", rotate: "18", size: 24 },
+    { top: "22%", right: "14%", rotate: "-22", size: 20 },
+    { bottom: "12%", left: "22%", rotate: "38", size: 22 },
+    { bottom: "22%", right: "18%", rotate: "-42", size: 18 },
+    { top: "32%", left: "12%", rotate: "8", size: 16 },
+    { top: "42%", right: "10%", rotate: "-12", size: 20 },
+    { bottom: "32%", left: "18%", rotate: "48", size: 22 },
+    { bottom: "42%", right: "14%", rotate: "-32", size: 18 },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative h-[400px] bg-orange-800">
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 bg-[url('/images/services-bg.jpg')] bg-cover bg-center" />
+        <LeafPattern
+          opacity={15}
+          leafSizes={{
+            topLeft: 38,
+            topRight: 32,
+            bottomLeft: 28,
+            bottomRight: 35,
+          }}
+          leafPositions={{
+            topLeft: { top: "12%", left: "12%", rotate: "15" },
+            topRight: { top: "18%", right: "18%", rotate: "-15" },
+            bottomLeft: { bottom: "12%", left: "18%", rotate: "42" },
+            bottomRight: { bottom: "18%", right: "12%", rotate: "-35" },
+          }}
+          additionalLeaves={additionalLeaves}
+          color="white"
+        />
         <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
           <div className="text-center text-white max-w-3xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">

@@ -9,6 +9,7 @@ import {
   Video,
 } from "lucide-react";
 import Image from "next/image";
+import LeafPattern from "@/components/shared/LeafPattern";
 
 export default function PlantCarePage() {
   const careGuides = [
@@ -75,12 +76,41 @@ export default function PlantCarePage() {
     },
   ];
 
+  // Additional leaves for a more intricate pattern
+  const additionalLeaves = [
+    { top: "10%", left: "15%", rotate: "15", size: 22 },
+    { top: "18%", right: "12%", rotate: "-20", size: 18 },
+    { bottom: "12%", left: "18%", rotate: "35", size: 20 },
+    { bottom: "20%", right: "15%", rotate: "-40", size: 16 },
+    { top: "28%", left: "10%", rotate: "5", size: 14 },
+    { top: "38%", right: "8%", rotate: "-15", size: 18 },
+    { bottom: "28%", left: "15%", rotate: "45", size: 20 },
+    { bottom: "38%", right: "12%", rotate: "-35", size: 16 },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative h-[300px] bg-orange-800">
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 bg-[url('/images/plant-care-bg.jpg')] bg-cover bg-center" />
+        <LeafPattern
+          opacity={15}
+          leafSizes={{
+            topLeft: 35,
+            topRight: 30,
+            bottomLeft: 25,
+            bottomRight: 32,
+          }}
+          leafPositions={{
+            topLeft: { top: "8%", left: "8%", rotate: "10" },
+            topRight: { top: "12%", right: "12%", rotate: "-10" },
+            bottomLeft: { bottom: "8%", left: "12%", rotate: "40" },
+            bottomRight: { bottom: "12%", right: "8%", rotate: "-25" },
+          }}
+          additionalLeaves={additionalLeaves}
+          color="white"
+        />
         <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
           <div className="text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">

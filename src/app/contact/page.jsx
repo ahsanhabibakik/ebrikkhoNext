@@ -1,15 +1,45 @@
 "use client";
 
-import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Send, Leaf } from "lucide-react";
 import Image from "next/image";
+import LeafPattern from "@/components/shared/LeafPattern";
 
 export default function ContactPage() {
+  // Additional leaves for a more intricate pattern
+  const additionalLeaves = [
+    { top: "8%", left: "15%", rotate: "15", size: 22 },
+    { top: "15%", right: "12%", rotate: "-20", size: 18 },
+    { bottom: "10%", left: "20%", rotate: "35", size: 20 },
+    { bottom: "18%", right: "15%", rotate: "-40", size: 16 },
+    { top: "25%", left: "8%", rotate: "5", size: 14 },
+    { top: "35%", right: "10%", rotate: "-15", size: 18 },
+    { bottom: "25%", left: "12%", rotate: "45", size: 20 },
+    { bottom: "35%", right: "8%", rotate: "-30", size: 16 },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative h-[300px] bg-orange-800">
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 bg-[url('/images/contact-bg.jpg')] bg-cover bg-center" />
+        <LeafPattern
+          opacity={15}
+          leafSizes={{
+            topLeft: 35,
+            topRight: 30,
+            bottomLeft: 25,
+            bottomRight: 32,
+          }}
+          leafPositions={{
+            topLeft: { top: "8%", left: "8%", rotate: "10" },
+            topRight: { top: "12%", right: "12%", rotate: "-10" },
+            bottomLeft: { bottom: "8%", left: "12%", rotate: "40" },
+            bottomRight: { bottom: "12%", right: "8%", rotate: "-25" },
+          }}
+          additionalLeaves={additionalLeaves}
+          color="white"
+        />
         <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
           <div className="text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>

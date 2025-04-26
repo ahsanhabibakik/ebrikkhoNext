@@ -17,11 +17,14 @@ export default function LeafPattern({
     bottomLeft: { bottom: "10", left: "20", rotate: "45" },
     bottomRight: { bottom: "20", right: "10", rotate: "-30" },
   },
+  additionalLeaves = [],
+  color = "white",
 }) {
   return (
     <div
       className={`absolute top-0 left-0 w-full h-full opacity-${opacity} ${className}`}
     >
+      {/* Main corner leaves */}
       <div
         className="absolute transform"
         style={{
@@ -30,7 +33,7 @@ export default function LeafPattern({
           transform: `rotate(${leafPositions.topLeft.rotate}deg)`,
         }}
       >
-        <Leaf size={leafSizes.topLeft} />
+        <Leaf size={leafSizes.topLeft} className={`text-${color}`} />
       </div>
       <div
         className="absolute transform"
@@ -40,7 +43,7 @@ export default function LeafPattern({
           transform: `rotate(${leafPositions.topRight.rotate}deg)`,
         }}
       >
-        <Leaf size={leafSizes.topRight} />
+        <Leaf size={leafSizes.topRight} className={`text-${color}`} />
       </div>
       <div
         className="absolute transform"
@@ -50,7 +53,7 @@ export default function LeafPattern({
           transform: `rotate(${leafPositions.bottomLeft.rotate}deg)`,
         }}
       >
-        <Leaf size={leafSizes.bottomLeft} />
+        <Leaf size={leafSizes.bottomLeft} className={`text-${color}`} />
       </div>
       <div
         className="absolute transform"
@@ -60,8 +63,25 @@ export default function LeafPattern({
           transform: `rotate(${leafPositions.bottomRight.rotate}deg)`,
         }}
       >
-        <Leaf size={leafSizes.bottomRight} />
+        <Leaf size={leafSizes.bottomRight} className={`text-${color}`} />
       </div>
+
+      {/* Additional leaves */}
+      {additionalLeaves.map((leaf, index) => (
+        <div
+          key={index}
+          className="absolute transform"
+          style={{
+            top: leaf.top,
+            left: leaf.left,
+            right: leaf.right,
+            bottom: leaf.bottom,
+            transform: `rotate(${leaf.rotate}deg)`,
+          }}
+        >
+          <Leaf size={leaf.size} className={`text-${color}`} />
+        </div>
+      ))}
     </div>
   );
 }
