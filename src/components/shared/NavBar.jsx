@@ -5,6 +5,7 @@ import { Menu, ShoppingCart, User, Search, ChevronDown, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import SearchModal from "./SearchModal";
+import { useCart } from "@/context/CartContext";
 
 const placeholderTexts = [
   "Search indoor plants...",
@@ -13,13 +14,25 @@ const placeholderTexts = [
   "Shop air-purifying greens...",
 ];
 
-export default function Navbar({ onCartOpen }) {
+const categories = [
+  { name: "All Plants", href: "/plants" },
+  { name: "Indoor Plants", href: "/categories/indoor" },
+  { name: "Outdoor Plants", href: "/categories/outdoor" },
+  { name: "Flowering Plants", href: "/categories/flowering" },
+  { name: "Succulents", href: "/categories/succulents" },
+  { name: "Herbs", href: "/categories/herbs" },
+  { name: "Bonsai", href: "/categories/bonsai" },
+  { name: "Air Plants", href: "/categories/air-plants" },
+];
+
+export default function Navbar() {
   const [placeholder, setPlaceholder] = useState(placeholderTexts[0]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const { setIsCartOpen, getCartCount } = useCart();
 
   useEffect(() => {
     let i = 0;
@@ -70,31 +83,16 @@ export default function Navbar({ onCartOpen }) {
               Categories <ChevronDown size={14} />
             </button>
             {isCategoriesOpen && (
-              <div className="absolute top-full left-0 mt-2 w-52 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-50">
-                <Link
-                  href="/categories/indoor"
-                  className="block px-4 py-2 hover:bg-orange-50"
-                >
-                  Indoor Plants
-                </Link>
-                <Link
-                  href="/categories/outdoor"
-                  className="block px-4 py-2 hover:bg-orange-50"
-                >
-                  Outdoor Plants
-                </Link>
-                <Link
-                  href="/categories/vegetables"
-                  className="block px-4 py-2 hover:bg-orange-50"
-                >
-                  Vegetables & Fruits
-                </Link>
-                <Link
-                  href="/categories/tools"
-                  className="block px-4 py-2 hover:bg-orange-50"
-                >
-                  Tools & Soil
-                </Link>
+              <div className="absolute top-full left-0 mt-2 w-64 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-50">
+                {categories.map((category) => (
+                  <Link
+                    key={category.name}
+                    href={category.href}
+                    className="block px-4 py-3 hover:bg-orange-50 text-base font-medium text-gray-800"
+                  >
+                    {category.name}
+                  </Link>
+                ))}
               </div>
             )}
           </div>
@@ -159,11 +157,11 @@ export default function Navbar({ onCartOpen }) {
           </Link>
           <button
             className="btn btn-ghost btn-circle relative"
-            onClick={onCartOpen}
+            onClick={() => setIsCartOpen(true)}
           >
             <ShoppingCart size={20} />
             <span className="badge badge-sm badge-primary absolute -top-1 -right-1">
-              0
+              {getCartCount()}
             </span>
           </button>
         </div>
@@ -171,87 +169,63 @@ export default function Navbar({ onCartOpen }) {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-orange-100 text-neutral shadow-md px-4 pb-4">
+        <div className="lg:hidden bg-orange-100 text-gray-800 shadow-md px-4 pb-4">
           <ul className="menu menu-vertical gap-2">
             <li>
-              <Link href="/plants" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                href="/plants"
+                onClick={() => setIsMenuOpen(false)}
+                className="text-gray-800"
+              >
                 Plants
               </Link>
             </li>
             <li>
               <details>
-                <summary>Categories</summary>
+                <summary className="text-base font-medium text-gray-800">
+                  Categories
+                </summary>
                 <ul className="pl-4">
-                  <li>
-                    <Link
-                      href="/categories/indoor"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Indoor Plants
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/categories/outdoor"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Outdoor Plants
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/categories/vegetables"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Vegetables & Fruits
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/categories/tools"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Tools & Soil
-                    </Link>
-                  </li>
+                  {categories.map((category) => (
+                    <li key={category.name}>
+                      <Link
+                        href={category.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="text-base font-medium py-2 text-gray-800"
+                      >
+                        {category.name}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </details>
             </li>
             <li>
-              <Link href="/services" onClick={() => setIsMenuOpen(false)}>
+              <Link
+                href="/services"
+                onClick={() => setIsMenuOpen(false)}
+                className="text-gray-800"
+              >
                 Services
               </Link>
             </li>
             <li>
-              <details>
-                <summary>Community</summary>
-                <ul className="pl-4">
-                  <li>
-                    <Link
-                      href="/community/events"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Events
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/community/blog"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Blog
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/community/forum"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Forum
-                    </Link>
-                  </li>
-                </ul>
-              </details>
+              <Link
+                href="/community/blog"
+                onClick={() => setIsMenuOpen(false)}
+                className="text-gray-800"
+              >
+                Blog
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/community/forum"
+                onClick={() => setIsMenuOpen(false)}
+                className="text-gray-800"
+              >
+                Forum
+              </Link>
             </li>
           </ul>
         </div>

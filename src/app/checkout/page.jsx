@@ -19,6 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useCustomer } from "@/context/CustomerContext";
+import Image from "next/image";
 
 // Bangladesh address data
 const divisions = [
@@ -98,7 +99,14 @@ const checkoutSchema = z.object({
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, total, clearCart } = useCart();
+  const {
+    cart,
+    getCartTotal,
+    getBkashDiscount,
+    getShippingCost,
+    getFinalTotal,
+    clearCart,
+  } = useCart();
   const { customerInfo, updateCustomerInfo, getCustomerByPhone } =
     useCustomer();
   const [step, setStep] = useState(1);
@@ -265,9 +273,10 @@ export default function CheckoutPage() {
           price: item.price,
           image: item.image,
         })),
-        subtotal: total,
-        shipping: total >= 5000 ? 0 : 100,
-        total: total + (total >= 5000 ? 0 : 100),
+        subtotal: prices.subtotal,
+        shipping: prices.shipping,
+        bKashDiscount: prices.bKashDiscount,
+        total: prices.finalTotal,
         payment: {
           method: paymentInfo.paymentMethod?.label || "bKash",
           transactionId: paymentInfo.transactionId,
@@ -318,17 +327,10 @@ export default function CheckoutPage() {
 
   // Calculate prices with bKash discount
   const calculatePrices = () => {
-    const subtotal = typeof total === "number" ? total : 0;
-    const standardShippingCost = 100; // Set standard shipping cost to ৳১০০.০০
-    const freeShippingThreshold = 5000; // Set free shipping threshold to ৳৫,০০০.০০
-
-    const shipping =
-      subtotal >= freeShippingThreshold ? 0 : standardShippingCost;
+    const subtotal = getCartTotal();
+    const shipping = getShippingCost();
     const bKashDiscount =
-      paymentInfo.paymentMethod?.value === "bkash"
-        ? subtotal *
-          (paymentMethods.find((m) => m.id === "bkash").discount / 100)
-        : 0;
+      paymentInfo.paymentMethod?.value === "bkash" ? subtotal * 0.05 : 0;
     const finalTotal = subtotal + shipping - bKashDiscount;
 
     return {
@@ -336,8 +338,7 @@ export default function CheckoutPage() {
       shipping,
       bKashDiscount,
       finalTotal,
-      freeShippingThreshold,
-      standardShippingCost,
+      freeShippingThreshold: 5000,
     };
   };
 
@@ -913,10 +914,8 @@ export default function CheckoutPage() {
                         <div className="bg-orange-50 p-4 rounded-lg">
                           <p className="text-orange-800">
                             You will pay the full amount (৳
-                            {formatPrice(
-                              total + (total >= 50 ? 0 : 5.99) + total * 0.1
-                            )}
-                            ) in cash when your order is delivered.
+                            {formatPrice(prices.finalTotal)}) in cash when your
+                            order is delivered.
                           </p>
                         </div>
                       )}
@@ -938,82 +937,173 @@ export default function CheckoutPage() {
                     <h2 className="text-xl font-semibold text-gray-900 mb-4">
                       Order Review
                     </h2>
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                       <div>
-                        <h3 className="font-medium text-gray-900 mb-2">
-                          Shipping Information
-                        </h3>
-                        <div className="text-gray-600">
-                          <p>{shippingInfo.name}</p>
-                          <p>{phoneNumber}</p>
-                          <p>{shippingInfo.streetAddress}</p>
-                          <p>{shippingInfo.address}</p>
+                        <div className="flex justify-between items-center mb-2">
+                          <h3 className="font-medium text-gray-900">
+                            Shipping Information
+                          </h3>
+                          <button
+                            onClick={() => setStep(2)}
+                            className="text-orange-600 hover:text-orange-700 text-sm font-medium"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <div className="text-gray-600 space-y-1">
+                            <p className="font-medium text-gray-900">
+                              {shippingInfo.name}
+                            </p>
+                            <p>{phoneNumber}</p>
+                            <p>{shippingInfo.streetAddress}</p>
+                            <p>
+                              {shippingInfo.area?.label},{" "}
+                              {shippingInfo.district?.label},{" "}
+                              {shippingInfo.division?.label}
+                            </p>
+                          </div>
                         </div>
                       </div>
+
                       <div>
-                        <h3 className="font-medium text-gray-900 mb-2">
-                          Payment Information
-                        </h3>
-                        <div className="text-gray-600">
-                          <p>
-                            Payment Method: {paymentInfo.paymentMethod?.label}
-                          </p>
-                          {paymentInfo.paymentMethod?.value === "card" && (
-                            <>
-                              <p>
-                                Card ending in{" "}
-                                {paymentInfo.cardNumber.slice(-4)}
-                              </p>
-                              <p>{paymentInfo.cardName}</p>
-                            </>
-                          )}
-                          {paymentInfo.paymentMethod?.value === "bkash" && (
-                            <p>bKash: {paymentInfo.bkashNumber}</p>
-                          )}
-                          {paymentInfo.paymentMethod?.value === "nagad" && (
-                            <p>Nagad: {paymentInfo.nagadNumber}</p>
-                          )}
-                          {paymentInfo.paymentMethod?.value === "rocket" && (
-                            <p>Rocket: {paymentInfo.rocketNumber}</p>
-                          )}
-                          {paymentInfo.paymentMethod?.value === "cod" && (
-                            <p>Cash on Delivery</p>
-                          )}
+                        <div className="flex justify-between items-center mb-2">
+                          <h3 className="font-medium text-gray-900">
+                            Payment Information
+                          </h3>
+                          <button
+                            onClick={() => setStep(3)}
+                            className="text-orange-600 hover:text-orange-700 text-sm font-medium"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <div className="text-gray-600 space-y-1">
+                            <p className="font-medium text-gray-900">
+                              Payment Method: {paymentInfo.paymentMethod?.label}
+                            </p>
+                            {paymentInfo.paymentMethod?.value === "card" && (
+                              <>
+                                <p>
+                                  Card ending in{" "}
+                                  {paymentInfo.cardNumber.slice(-4)}
+                                </p>
+                                <p>{paymentInfo.cardName}</p>
+                              </>
+                            )}
+                            {paymentInfo.paymentMethod?.value === "bkash" && (
+                              <p>bKash: {paymentInfo.bkashNumber}</p>
+                            )}
+                            {paymentInfo.paymentMethod?.value === "nagad" && (
+                              <p>Nagad: {paymentInfo.nagadNumber}</p>
+                            )}
+                            {paymentInfo.paymentMethod?.value === "rocket" && (
+                              <p>Rocket: {paymentInfo.rocketNumber}</p>
+                            )}
+                            {paymentInfo.paymentMethod?.value === "cod" && (
+                              <p>Cash on Delivery</p>
+                            )}
+                          </div>
                         </div>
                       </div>
+
                       <div>
                         <h3 className="font-medium text-gray-900 mb-2">
                           Order Items
                         </h3>
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                           {cart.map((item) => (
                             <div
                               key={item.id}
-                              className="flex items-center justify-between"
+                              className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg"
                             >
-                              <div>
-                                <p className="font-medium text-gray-900">
-                                  {item.name}
-                                </p>
-                                <p className="text-sm text-gray-600">
-                                  Quantity: {item.quantity}
-                                </p>
+                              <div className="relative w-20 h-20 flex-shrink-0">
+                                <Image
+                                  src={item.image}
+                                  alt={item.name}
+                                  fill
+                                  className="object-cover rounded-lg"
+                                />
                               </div>
-                              <p className="text-gray-900">
-                                {formatPrice(item.price * item.quantity)}
-                              </p>
+                              <div className="flex-1">
+                                <div className="flex justify-between">
+                                  <div>
+                                    <p className="font-medium text-gray-900">
+                                      {item.name}
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                      Quantity: {item.quantity}
+                                    </p>
+                                  </div>
+                                  <p className="text-gray-900 font-medium">
+                                    {formatPrice(item.price * item.quantity)}
+                                  </p>
+                                </div>
+                              </div>
                             </div>
                           ))}
+                        </div>
+                      </div>
+
+                      <div className="border-t pt-4">
+                        <h3 className="font-medium text-gray-900 mb-2">
+                          Order Summary
+                        </h3>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-gray-600">
+                            <span>Subtotal</span>
+                            <span>{formatPrice(prices.subtotal)}</span>
+                          </div>
+                          {prices.bKashDiscount > 0 && (
+                            <div className="flex justify-between text-green-600">
+                              <span>bKash Discount (5%)</span>
+                              <span>-{formatPrice(prices.bKashDiscount)}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between text-gray-600">
+                            <span>Shipping</span>
+                            <span>
+                              {prices.shipping === 0
+                                ? "Free"
+                                : formatPrice(prices.shipping)}
+                            </span>
+                          </div>
+                          <div className="border-t pt-2 mt-2">
+                            <div className="flex justify-between text-lg font-semibold text-gray-900">
+                              <span>Total</span>
+                              <span>{formatPrice(prices.finalTotal)}</span>
+                            </div>
+                          </div>
+                          {prices.shipping > 0 && (
+                            <p className="text-sm text-gray-600 text-center mt-2">
+                              Add{" "}
+                              {formatPrice(
+                                prices.freeShippingThreshold - prices.subtotal
+                              )}{" "}
+                              more for free shipping
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>
                   </div>
                   <button
                     onClick={handlePlaceOrder}
-                    className="w-full px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors flex items-center justify-center gap-2"
+                    disabled={isProcessing}
+                    className="w-full px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Place Order
-                    <Lock className="w-5 h-5" />
+                    {isProcessing ? (
+                      <>
+                        <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        Place Order
+                        <Lock className="w-5 h-5" />
+                      </>
+                    )}
                   </button>
                 </div>
               )}

@@ -21,11 +21,9 @@ export default function RootLayout({ children }) {
         <CartProvider>
           <CustomerProvider>
             <div className="min-h-screen flex flex-col">
-              
               <div className="border-b">
                 <NavBar />
               </div>
-
               <main className="flex-grow">{children}</main>
               <Footer />
               <CartSidebar />
