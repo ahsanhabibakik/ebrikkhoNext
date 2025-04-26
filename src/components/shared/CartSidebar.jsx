@@ -1,6 +1,5 @@
 "use client";
 
-import { useCart } from "@/context/CartContext";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -14,51 +13,55 @@ import {
   Info,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  removeFromCart,
+  updateQuantity,
+  clearCart,
+  toggleCart,
+  applyCoupon as applyCouponAction,
+  setShippingCost as setShippingCostAction,
+} from "@/redux/slices/cartSlice";
 
 export default function CartSidebar() {
-  const {
-    cart,
-    isCartOpen,
-    setIsCartOpen,
-    removeFromCart,
-    updateQuantity,
-    getCartTotal,
-    clearCart,
-  } = useCart();
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart.items);
+  const isCartOpen = useAppSelector((state) => state.cart.isCartOpen);
+  const cartTotal = useAppSelector((state) => state.cart.total);
+  const shippingCost = useAppSelector((state) => state.cart.shippingCost);
+  const discount = useAppSelector((state) => state.cart.discount);
+  const couponCode = useAppSelector((state) => state.cart.couponCode);
 
-  const [couponCode, setCouponCode] = useState("");
-  const [couponApplied, setCouponApplied] = useState(false);
-  const [couponDiscount, setCouponDiscount] = useState(0);
-  const [shippingCost, setShippingCost] = useState(0);
+  const [inputCouponCode, setInputCouponCode] = useState("");
   const [freeShippingThreshold] = useState(5000); // Free shipping above 5000 BDT
 
   useEffect(() => {
     // Calculate shipping cost based on cart total
-    if (getCartTotal() >= freeShippingThreshold) {
-      setShippingCost(0);
+    if (cartTotal >= freeShippingThreshold) {
+      dispatch(setShippingCostAction(0));
     } else {
-      setShippingCost(100); // Standard shipping cost
+      dispatch(setShippingCostAction(100)); // Standard shipping cost
     }
-  }, [getCartTotal, freeShippingThreshold]);
+  }, [cartTotal, freeShippingThreshold, dispatch]);
 
   const applyCoupon = () => {
     // Simple coupon logic - you can enhance this
-    if (couponCode.toLowerCase() === "welcome10") {
-      setCouponApplied(true);
-      setCouponDiscount(getCartTotal() * 0.1); // 10% discount
-    } else {
-      setCouponApplied(false);
-      setCouponDiscount(0);
+    if (inputCouponCode.toLowerCase() === "welcome10") {
+      dispatch(
+        applyCouponAction({
+          code: inputCouponCode,
+          discount: cartTotal * 0.1, // 10% discount
+        })
+      );
     }
   };
 
   const getFinalTotal = () => {
-    const subtotal = getCartTotal();
-    return subtotal - couponDiscount + shippingCost;
+    return cartTotal - discount + shippingCost;
   };
 
   const getAmountNeededForFreeShipping = () => {
-    const amountNeeded = freeShippingThreshold - getCartTotal();
+    const amountNeeded = freeShippingThreshold - cartTotal;
     return amountNeeded > 0 ? amountNeeded : 0;
   };
 
@@ -68,7 +71,7 @@ export default function CartSidebar() {
       {isCartOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-10 z-30"
-          onClick={() => setIsCartOpen(false)}
+          onClick={() => dispatch(toggleCart())}
         />
       )}
 
@@ -85,7 +88,7 @@ export default function CartSidebar() {
               Shopping Cart
             </h2>
             <button
-              onClick={() => setIsCartOpen(false)}
+              onClick={() => dispatch(toggleCart())}
               className="p-2  bg-gray-500 hover:bg-gray-400 rounded-full"
             >
               <X className="w-5 h-5" />
@@ -94,21 +97,21 @@ export default function CartSidebar() {
 
           {/* Cart Items */}
           <div className="flex-1 overflow-y-auto p-4">
-            {cart.length === 0 ? (
+            {cartItems.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center">
                 <ShoppingBag className="w-16 h-16 text-gray-400 mb-4" />
                 <p className="text-gray-600">Your cart is empty</p>
                 <Link
                   href="/products"
                   className="mt-4 text-orange-600 hover:text-orange-700"
-                  onClick={() => setIsCartOpen(false)}
+                  onClick={() => dispatch(toggleCart())}
                 >
                   Continue Shopping
                 </Link>
               </div>
             ) : (
               <div className="space-y-4">
-                {cart.map((item) => (
+                {cartItems.map((item) => (
                   <div
                     key={item.id}
                     className="flex gap-4 p-4 bg-gray-50 rounded-lg relative"
@@ -127,7 +130,7 @@ export default function CartSidebar() {
                           {item.name}
                         </h3>
                         <button
-                          onClick={() => removeFromCart(item.id)}
+                          onClick={() => dispatch(removeFromCart(item.id))}
                           className="text-gray-400 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -139,7 +142,12 @@ export default function CartSidebar() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() =>
-                            updateQuantity(item.id, item.quantity - 1)
+                            dispatch(
+                              updateQuantity({
+                                id: item.id,
+                                quantity: item.quantity - 1,
+                              })
+                            )
                           }
                           className="p-2 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 hover:text-gray-900"
                         >
@@ -150,7 +158,12 @@ export default function CartSidebar() {
                         </span>
                         <button
                           onClick={() =>
-                            updateQuantity(item.id, item.quantity + 1)
+                            dispatch(
+                              updateQuantity({
+                                id: item.id,
+                                quantity: item.quantity + 1,
+                              })
+                            )
                           }
                           className="p-2 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 hover:text-gray-900"
                         >
@@ -165,7 +178,7 @@ export default function CartSidebar() {
           </div>
 
           {/* Shipping Information */}
-          {cart.length > 0 && (
+          {cartItems.length > 0 && (
             <div className="border-t p-4 bg-gray-50">
               <div className="flex items-center gap-2 mb-2">
                 <Truck className="w-5 h-5 text-orange-600" />
@@ -173,7 +186,7 @@ export default function CartSidebar() {
                   Shipping Information
                 </h3>
               </div>
-              {getCartTotal() >= freeShippingThreshold ? (
+              {cartTotal >= freeShippingThreshold ? (
                 <div className="text-green-600 text-sm">
                   You qualify for free shipping!
                 </div>
@@ -187,7 +200,7 @@ export default function CartSidebar() {
           )}
 
           {/* Coupon Section */}
-          {cart.length > 0 && (
+          {cartItems.length > 0 && (
             <div className="border-t p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Tag className="w-5 h-5 text-orange-600" />
@@ -198,8 +211,8 @@ export default function CartSidebar() {
                   <input
                     type="text"
                     placeholder="Enter coupon code"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value)}
+                    value={inputCouponCode}
+                    onChange={(e) => setInputCouponCode(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900"
                   />
                 </div>
@@ -210,7 +223,7 @@ export default function CartSidebar() {
                   Apply
                 </button>
               </div>
-              {couponApplied && (
+              {couponCode && (
                 <div className="mb-4 p-2 bg-green-50 text-green-700 rounded-lg flex items-center gap-2">
                   <Tag className="w-4 h-4" />
                   <span>Coupon applied: 10% off</span>
@@ -220,19 +233,19 @@ export default function CartSidebar() {
           )}
 
           {/* Footer */}
-          {cart.length > 0 && (
+          {cartItems.length > 0 && (
             <div className="border-t p-4">
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-700 font-medium">Subtotal</span>
                   <span className="font-medium text-gray-900">
-                    ৳{getCartTotal().toLocaleString()}
+                    ৳{cartTotal.toLocaleString()}
                   </span>
                 </div>
-                {couponApplied && (
+                {discount > 0 && (
                   <div className="flex justify-between items-center text-green-600">
                     <span className="font-medium">Coupon Discount</span>
-                    <span>-৳{couponDiscount.toLocaleString()}</span>
+                    <span>-৳{discount.toLocaleString()}</span>
                   </div>
                 )}
                 <div className="flex justify-between items-center">
@@ -260,12 +273,12 @@ export default function CartSidebar() {
                 <Link
                   href="/checkout"
                   className="block w-full bg-orange-600 text-white text-center py-3 rounded-lg hover:bg-orange-700 transition-colors font-medium"
-                  onClick={() => setIsCartOpen(false)}
+                  onClick={() => dispatch(toggleCart())}
                 >
                   Proceed to Checkout
                 </Link>
                 <button
-                  onClick={clearCart}
+                  onClick={() => dispatch(clearCart())}
                   className="block w-full text-gray-600 hover:text-gray-800 font-medium"
                 >
                   Clear Cart

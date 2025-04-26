@@ -5,7 +5,8 @@ import { Menu, ShoppingCart, User, Search, ChevronDown, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import SearchModal from "./SearchModal";
-import { useCart } from "@/context/CartContext";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { toggleCart } from "@/redux/slices/cartSlice";
 
 const placeholderTexts = [
   "Search indoor plants...",
@@ -25,14 +26,21 @@ const categories = [
   { name: "Air Plants", href: "/categories/air-plants" },
 ];
 
-export default function Navbar() {
+export default function NavBar() {
   const [placeholder, setPlaceholder] = useState(placeholderTexts[0]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
-  const { setIsCartOpen, getCartCount } = useCart();
+
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart.items);
+  const isCartOpen = useAppSelector((state) => state.cart.isCartOpen);
+
+  const getCartCount = () => {
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
+  };
 
   useEffect(() => {
     let i = 0;
@@ -157,7 +165,7 @@ export default function Navbar() {
           </Link>
           <button
             className="btn btn-ghost btn-circle relative"
-            onClick={() => setIsCartOpen(true)}
+            onClick={() => dispatch(toggleCart())}
           >
             <ShoppingCart size={20} />
             <span className="badge badge-sm badge-primary absolute -top-1 -right-1">

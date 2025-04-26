@@ -2,46 +2,142 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Download, ArrowRight, ShoppingBag } from "lucide-react";
-import { formatPrice } from "@/utils/formatPrice";
-import { generateOrderPDF } from "@/utils/generateOrderPDF";
-import { useCart } from "@/context/CartContext";
-import { useCustomer } from "@/context/CustomerContext";
+import {
+  CheckCircle,
+  Download,
+  Package,
+  Phone,
+  Mail,
+  ArrowRight,
+  Clock,
+  Truck,
+  CreditCard,
+  MapPin,
+  User,
+  Info,
+  Leaf,
+  Gift,
+  Share2,
+  ShoppingBag,
+} from "lucide-react";
+import Link from "next/link";
 import Image from "next/image";
+import { useAppDispatch } from "@/redux/hooks";
+import { clearCart } from "@/redux/slices/cartSlice";
+import { generateOrderPDF } from "@/utils/generateOrderPDF";
+import { formatPrice } from "@/utils/formatPrice";
 
-export default function OrderSuccessPage() {
+export default function CheckoutSuccessPage() {
   const router = useRouter();
-  const { cart, total, clearCart } = useCart();
-  const { customerInfo } = useCustomer();
+  const dispatch = useAppDispatch();
   const [orderDetails, setOrderDetails] = useState(null);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Get order details from localStorage
-    const savedOrderDetails = localStorage.getItem("lastOrderDetails");
-    if (!savedOrderDetails) {
-      router.push("/checkout");
-      return;
-    }
+    const storedOrder = localStorage.getItem("lastOrderDetails");
+    console.log("Stored order data:", storedOrder); // Debug log
 
-    const orderInfo = JSON.parse(savedOrderDetails);
-    // Ensure date is in English numbers
-    if (orderInfo.date) {
-      const dateParts = orderInfo.date.split("/");
-      if (dateParts.length === 3) {
-        orderInfo.date = `${dateParts[0].padStart(
-          2,
-          "0"
-        )}/${dateParts[1].padStart(2, "0")}/${dateParts[2]}`;
+    if (storedOrder) {
+      try {
+        const parsedOrder = JSON.parse(storedOrder);
+        console.log("Parsed order data:", parsedOrder); // Debug log
+
+        // Check if the order has valid data
+        if (
+          parsedOrder &&
+          parsedOrder.orderNumber &&
+          parsedOrder.items &&
+          parsedOrder.items.length > 0
+        ) {
+          // Add status to the order
+          const orderWithStatus = {
+            ...parsedOrder,
+            status: "Processing",
+          };
+
+          setOrderDetails(orderWithStatus);
+
+          // Also save to orders history
+          const existingOrders = localStorage.getItem("orders");
+          let orders = [];
+
+          try {
+            if (existingOrders) {
+              orders = JSON.parse(existingOrders);
+              // Ensure orders is an array
+              if (!Array.isArray(orders)) {
+                orders = [];
+              }
+            }
+
+            // Check if this order already exists in the orders array
+            const orderExists = orders.some(
+              (order) => order.orderNumber === orderWithStatus.orderNumber
+            );
+
+            if (!orderExists) {
+              // Add new order to the beginning of the array
+              orders.unshift(orderWithStatus);
+              // Save back to localStorage
+              localStorage.setItem("orders", JSON.stringify(orders));
+              console.log("Order saved to orders history:", orders); // Debug log
+            } else {
+              console.log("Order already exists in history"); // Debug log
+            }
+          } catch (error) {
+            console.error("Error handling orders history:", error);
+            // If there's an error, start fresh with just this order
+            localStorage.setItem("orders", JSON.stringify([orderWithStatus]));
+          }
+        } else {
+          console.error("Invalid order data structure:", parsedOrder); // Debug log
+          // Redirect to home if order data is invalid
+          router.push("/");
+        }
+      } catch (error) {
+        console.error("Error parsing order data:", error);
+        // Redirect to home if parsing fails
+        router.push("/");
       }
+    } else {
+      console.error("No order data found in localStorage"); // Debug log
+      // Redirect to home if no order data exists
+      router.push("/");
     }
-    setOrderDetails(orderInfo);
+    // Clear cart after successful checkout
+    localStorage.removeItem("cart");
     setIsLoading(false);
   }, [router]);
 
-  const handleDownloadPDF = () => {
-    if (!orderDetails) return;
-    generateOrderPDF(orderDetails);
+  const handleDownloadPDF = async () => {
+    setIsDownloading(true);
+    try {
+      await generateOrderPDF(orderDetails);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const handleShareOrder = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "My Ebrikkho Order",
+          text: `I just placed an order #${orderDetails?.orderNumber} on Ebrikkho!`,
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.error("Error sharing:", error);
+      }
+    } else {
+      // Fallback to copying to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      alert("Link copied to clipboard!");
+    }
   };
 
   if (isLoading) {
@@ -54,160 +150,250 @@ export default function OrderSuccessPage() {
 
   if (!orderDetails) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            No Order Found
-          </h1>
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-sm p-8 max-w-md w-full text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Order Not Found
+          </h2>
           <p className="text-gray-600 mb-6">
-            Please complete your checkout process first.
+            We couldn't find your order information. This might happen if you've
+            refreshed the page or if your session has expired.
           </p>
           <button
-            onClick={() => router.push("/checkout")}
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-orange-600 hover:bg-orange-700"
+            onClick={() => router.push("/")}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
           >
-            Go to Checkout
+            Return to Home
+            <ArrowRight className="w-4 h-4 ml-2" />
           </button>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <div className="text-center mb-8">
-            <div className="w-32 h-32 mx-auto mb-4">
-              <Image
-                src="/logo.png"
-                alt="Ebrikkho Logo"
-                width={128}
-                height={128}
-                className="object-contain"
-              />
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Order Confirmed!
-            </h1>
-            <p className="text-gray-600">
-              Thank you for your purchase. Your order has been received and is
-              being processed. You will receive an email confirmation shortly.
-            </p>
-          </div>
+  // Calculate estimated delivery dates (3-5 days from order date)
+  const orderDate = new Date(orderDetails.date);
+  const minDeliveryDate = new Date(orderDate);
+  minDeliveryDate.setDate(orderDate.getDate() + 3);
+  const maxDeliveryDate = new Date(orderDate);
+  maxDeliveryDate.setDate(orderDate.getDate() + 5);
 
-          <div className="border-t border-gray-200 pt-6">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Order #{orderDetails.orderNumber}
-                </h2>
-                <p className="text-sm text-gray-600">
-                  Placed on {orderDetails.date}
-                </p>
-              </div>
+  const formatDate = (date) => {
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  // Define order status steps with unique IDs
+  const orderStatusSteps = [
+    {
+      id: "confirmed",
+      title: "Order Confirmed",
+      description: "Your order has been received",
+      icon: <CheckCircle className="w-4 h-4" />,
+      status: "completed",
+    },
+    {
+      id: "processing",
+      title: "Processing",
+      description: "We're preparing your order",
+      icon: <Package className="w-4 h-4" />,
+      status: "current",
+    },
+    {
+      id: "shipped",
+      title: "Shipped",
+      description: `Estimated: ${formatDate(minDeliveryDate)} - ${formatDate(
+        maxDeliveryDate
+      )}`,
+      icon: <Truck className="w-4 h-4" />,
+      status: "upcoming",
+    },
+    {
+      id: "delivered",
+      title: "Delivered",
+      description: "Your order will arrive soon",
+      icon: <CheckCircle className="w-4 h-4" />,
+      status: "upcoming",
+    },
+  ];
+
+  // Define plant care tips with unique IDs
+  const plantCareTips = [
+    {
+      id: "watering",
+      title: "Watering Guide",
+      description:
+        "Most indoor plants prefer slightly moist soil. Water when the top inch of soil feels dry to the touch.",
+      bgColor: "bg-green-50",
+      borderColor: "border-green-100",
+      textColor: "text-green-700",
+      titleColor: "text-green-800",
+    },
+    {
+      id: "light",
+      title: "Light Requirements",
+      description:
+        "Place your plants in bright, indirect light. Avoid direct sunlight which can scorch leaves.",
+      bgColor: "bg-blue-50",
+      borderColor: "border-blue-100",
+      textColor: "text-blue-700",
+      titleColor: "text-blue-800",
+    },
+    {
+      id: "temperature",
+      title: "Temperature",
+      description:
+        "Most houseplants thrive in temperatures between 65-80°F (18-27°C). Avoid drafts and extreme temperature changes.",
+      bgColor: "bg-yellow-50",
+      borderColor: "border-yellow-100",
+      textColor: "text-yellow-700",
+      titleColor: "text-yellow-800",
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-12">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-10 h-10 text-green-600" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Thank You For Your Order!
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Your order has been confirmed and will be processed shortly.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Order #{orderDetails.orderNumber}
+              </h2>
+              <p className="text-gray-600">
+                Placed on{" "}
+                {new Date(orderDetails.date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
               <button
                 onClick={handleDownloadPDF}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                disabled={isDownloading}
+                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
                 <Download className="w-4 h-4 mr-2" />
-                Download Order Details
+                {isDownloading ? "Downloading..." : "Download PDF"}
               </button>
+              <button
+                onClick={handleShareOrder}
+                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                <Share2 className="w-4 h-4 mr-2" />
+                Share
+              </button>
+              <Link
+                href="/orders"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+              >
+                <ShoppingBag className="w-4 h-4 mr-2" />
+                View All Orders
+              </Link>
             </div>
+          </div>
 
-            <div className="space-y-4">
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="text-sm font-medium text-gray-900 mb-2">
-                  Order Status
-                </h3>
-                <div className="flex items-center">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    {orderDetails.status}
-                  </span>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Order Items
+              </h3>
+              <div className="space-y-4">
+                {orderDetails.items.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg"
+                  >
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900">{item.name}</h4>
+                      <p className="text-sm text-gray-600">
+                        Quantity: {item.quantity}
+                      </p>
+                    </div>
+                    <p className="font-medium text-gray-900">
+                      {formatPrice(item.price * item.quantity)}
+                    </p>
+                  </div>
+                ))}
               </div>
 
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="text-sm font-medium text-gray-900 mb-2">
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Customer Information
                 </h3>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <p>{orderDetails.customer.name}</p>
-                  {orderDetails.customer.email && (
-                    <p>{orderDetails.customer.email}</p>
-                  )}
-                  <p>{orderDetails.customer.phone}</p>
-                  <p>{orderDetails.customer.address}</p>
+                <div className="space-y-2 text-gray-600">
+                  <p>{orderDetails.customer?.name || "N/A"}</p>
+                  <p>{orderDetails.customer?.phone || "N/A"}</p>
+                  <p>{orderDetails.customer?.address || "N/A"}</p>
                 </div>
               </div>
 
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="text-sm font-medium text-gray-900 mb-2">
-                  Order Summary
-                </h3>
-                <div className="space-y-2">
-                  {orderDetails.items.map((item, index) => (
-                    <div key={index} className="flex justify-between text-sm">
-                      <span className="text-gray-600">
-                        {item.name} x {item.quantity}
-                      </span>
-                      <span className="text-gray-900">
-                        {formatPrice(item.price * item.quantity)}
-                      </span>
-                    </div>
-                  ))}
-                  <div className="border-t border-gray-200 pt-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Subtotal</span>
-                      <span className="text-gray-900">
-                        {formatPrice(orderDetails.subtotal)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Shipping</span>
-                      <span className="text-gray-900">
-                        {formatPrice(orderDetails.shipping)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm font-medium">
-                      <span className="text-gray-900">Total</span>
-                      <span className="text-gray-900">
-                        {formatPrice(orderDetails.total)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="text-sm font-medium text-gray-900 mb-2">
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Payment Information
                 </h3>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <p>Method: {orderDetails.payment.method}</p>
-                  {orderDetails.payment.transactionId && (
-                    <p>Transaction ID: {orderDetails.payment.transactionId}</p>
+                <div className="space-y-2 text-gray-600">
+                  <p>
+                    <span className="font-medium">Method:</span>{" "}
+                    {orderDetails.payment?.method || "N/A"}
+                  </p>
+                  {orderDetails.payment?.transactionId && (
+                    <p>
+                      <span className="font-medium">Transaction ID:</span>{" "}
+                      {orderDetails.payment.transactionId}
+                    </p>
                   )}
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-8 flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={() => router.push("/orders")}
-              className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-            >
-              View Order Status
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </button>
-            <button
-              onClick={() => router.push("/")}
-              className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-            >
-              Continue Shopping
-            </button>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Order Summary
+              </h3>
+              <div className="space-y-3">
+                <div className="flex justify-between text-gray-600">
+                  <span>Subtotal</span>
+                  <span>{formatPrice(orderDetails.total.subtotal)}</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span>Shipping</span>
+                  <span>{formatPrice(orderDetails.total.shipping)}</span>
+                </div>
+                <div className="flex justify-between font-medium text-gray-900 text-lg pt-3 border-t">
+                  <span>Total</span>
+                  <span>{formatPrice(orderDetails.total.total)}</span>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div className="text-center">
+          <button
+            onClick={() => router.push("/shop")}
+            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+          >
+            Continue Shopping
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </button>
         </div>
       </div>
     </div>

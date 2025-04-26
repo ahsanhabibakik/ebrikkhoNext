@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 import Select from "react-select";
 import {
@@ -20,6 +19,9 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useCustomer } from "@/context/CustomerContext";
 import Image from "next/image";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { clearCart } from "@/redux/slices/cartSlice";
+import { updateCustomerInfo } from "@/redux/slices/authSlice";
 
 // Bangladesh address data
 const divisions = [
@@ -99,40 +101,47 @@ const checkoutSchema = z.object({
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const {
-    cart,
-    getCartTotal,
-    getBkashDiscount,
-    getShippingCost,
-    getFinalTotal,
-    clearCart,
-  } = useCart();
-  const { customerInfo, updateCustomerInfo, getCustomerByPhone } =
-    useCustomer();
-  const [step, setStep] = useState(1);
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart.items);
+  const cartTotal = useAppSelector((state) => state.cart.total);
+  const shippingCost = useAppSelector((state) => state.cart.shippingCost);
+  const discount = useAppSelector((state) => state.cart.discount);
+  const { isAuthenticated, customerInfo } = useAppSelector(
+    (state) => state.auth
+  );
+
+  const { customer, setCustomer } = useCustomer();
+  const [step, setStep] = useState(
+    isAuthenticated && customerInfo?.phone ? 2 : 1
+  );
+  const [phoneNumber, setPhoneNumber] = useState(customerInfo?.phone || "");
   const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpSent, setOtpSent] = useState(
+    isAuthenticated && customerInfo?.phone ? true : false
+  );
+  const [otpVerified, setOtpVerified] = useState(
+    isAuthenticated && customerInfo?.phone ? true : false
+  );
   const [orderNumber, setOrderNumber] = useState("");
   const [shippingInfo, setShippingInfo] = useState({
-    name: "",
-    division: null,
-    district: null,
-    area: null,
-    streetAddress: "",
-    address: "",
+    name: customerInfo?.name || customer?.name || "",
+    division: customerInfo?.division || customer?.division || null,
+    district: customerInfo?.district || customer?.district || null,
+    area: customerInfo?.area || customer?.area || null,
+    streetAddress: customerInfo?.streetAddress || customer?.streetAddress || "",
+    address: customerInfo?.address || customer?.address || "",
   });
   const [paymentInfo, setPaymentInfo] = useState({
-    paymentMethod: null,
-    cardNumber: "",
-    cardName: "",
-    expiryDate: "",
-    cvv: "",
-    bkashNumber: "",
-    nagadNumber: "",
-    rocketNumber: "",
-    transactionId: "",
+    paymentMethod:
+      customerInfo?.paymentMethod || customer?.paymentMethod || null,
+    cardNumber: customerInfo?.cardNumber || customer?.cardNumber || "",
+    cardName: customerInfo?.cardName || customer?.cardName || "",
+    expiryDate: customerInfo?.expiryDate || customer?.expiryDate || "",
+    cvv: customerInfo?.cvv || customer?.cvv || "",
+    bkashNumber: customerInfo?.bkashNumber || customer?.bkashNumber || "",
+    nagadNumber: customerInfo?.nagadNumber || customer?.nagadNumber || "",
+    rocketNumber: customerInfo?.rocketNumber || customer?.rocketNumber || "",
+    transactionId: customerInfo?.transactionId || customer?.transactionId || "",
   });
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -143,6 +152,10 @@ export default function CheckoutPage() {
   } = useForm({
     resolver: zodResolver(checkoutSchema),
   });
+
+  const getFinalTotal = () => {
+    return cartTotal - discount + shippingCost;
+  };
 
   // Custom styles for react-select
   const customStyles = {
@@ -206,43 +219,42 @@ export default function CheckoutPage() {
 
   const handlePhoneSubmit = async (e) => {
     e.preventDefault();
-    // Check if customer exists
-    const existingCustomer = await getCustomerByPhone(phoneNumber);
-    if (existingCustomer) {
-      // Pre-fill shipping info if customer exists
-      setShippingInfo({
-        ...shippingInfo,
-        name: existingCustomer.name,
-        address: existingCustomer.address,
-      });
+    setIsProcessing(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setOtpSent(true);
+      setCustomer({ phone: phoneNumber });
+      if (isAuthenticated) {
+        dispatch(updateCustomerInfo({ phone: phoneNumber }));
+      }
+    } catch (error) {
+      toast.error("Failed to send OTP. Please try again.");
+    } finally {
+      setIsProcessing(false);
     }
-    setOtpSent(true);
   };
 
   const handleOtpSubmit = (e) => {
     e.preventDefault();
-    const lastFourDigits = phoneNumber.slice(-4);
-    if (otp === lastFourDigits) {
-      setOtpVerified(true);
-      setStep(2);
-    } else {
-      alert("Invalid OTP. Please try again.");
-    }
+    setOtpVerified(true);
+    setStep(2);
   };
 
   const handleShippingSubmit = (e) => {
     e.preventDefault();
-    // Save customer info
-    updateCustomerInfo({
-      name: shippingInfo.name,
-      phone: phoneNumber,
-      address: shippingInfo.address,
-    });
+    setCustomer({ ...customer, ...shippingInfo });
+    if (isAuthenticated) {
+      dispatch(updateCustomerInfo(shippingInfo));
+    }
     setStep(3);
   };
 
   const handlePaymentSubmit = (e) => {
     e.preventDefault();
+    setCustomer({ ...customer, ...paymentInfo });
+    if (isAuthenticated) {
+      dispatch(updateCustomerInfo(paymentInfo));
+    }
     setStep(4);
   };
 
@@ -256,38 +268,37 @@ export default function CheckoutPage() {
         "0"
       )}/${String(today.getDate()).padStart(2, "0")}/${today.getFullYear()}`;
 
-      // Create order details object
+      // Create order details
       const orderDetails = {
-        orderNumber: orderNumber,
-        date: formattedDate,
-        status: "Processing",
+        orderNumber: `ORD-${Date.now()}`,
+        date: new Date().toISOString(),
         customer: {
           name: shippingInfo.name,
-          email: customerInfo?.email || "",
+          email: customer?.email || "",
           phone: phoneNumber,
           address: shippingInfo.address,
         },
-        items: cart.map((item) => ({
+        items: cartItems.map((item) => ({
+          id: item.id,
           name: item.name,
           quantity: item.quantity,
           price: item.price,
           image: item.image,
         })),
-        subtotal: prices.subtotal,
-        shipping: prices.shipping,
-        bKashDiscount: prices.bKashDiscount,
-        total: prices.finalTotal,
-        payment: {
-          method: paymentInfo.paymentMethod?.label || "bKash",
-          transactionId: paymentInfo.transactionId,
+        total: {
+          subtotal: cartTotal,
+          discount: discount,
+          shipping: shippingCost,
+          total: getFinalTotal(),
         },
       };
 
-      // Store order details in localStorage
+      console.log("Saving order details:", orderDetails); // Debug log
       localStorage.setItem("lastOrderDetails", JSON.stringify(orderDetails));
+      console.log("Order details saved to localStorage"); // Debug log
 
       // Clear cart and redirect to success page
-      clearCart();
+      dispatch(clearCart());
       router.push("/checkout/success");
     } catch (error) {
       toast.error("Failed to place order. Please try again.");
@@ -327,8 +338,8 @@ export default function CheckoutPage() {
 
   // Calculate prices with bKash discount
   const calculatePrices = () => {
-    const subtotal = getCartTotal();
-    const shipping = getShippingCost();
+    const subtotal = cartTotal;
+    const shipping = shippingCost;
     const bKashDiscount =
       paymentInfo.paymentMethod?.value === "bkash" ? subtotal * 0.05 : 0;
     const finalTotal = subtotal + shipping - bKashDiscount;
@@ -369,7 +380,7 @@ export default function CheckoutPage() {
     });
   };
 
-  if (cart.length === 0) {
+  if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1013,7 +1024,7 @@ export default function CheckoutPage() {
                           Order Items
                         </h3>
                         <div className="space-y-4">
-                          {cart.map((item) => (
+                          {cartItems.map((item) => (
                             <div
                               key={item.id}
                               className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg"

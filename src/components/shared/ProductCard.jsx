@@ -4,13 +4,14 @@ import Image from "next/image";
 import { FaShoppingCart, FaStar, FaHeart, FaRegHeart } from "react-icons/fa";
 import { Dialog } from "@headlessui/react";
 import { Heart, ShoppingCart, Tag } from "lucide-react";
-import { useCart } from "@/context/CartContext";
+import { useAppDispatch } from "@/redux/hooks";
+import { addToCart, toggleCart } from "@/redux/slices/cartSlice";
 
 const ProductCard = ({ product }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const { addToCart } = useCart();
+  const dispatch = useAppDispatch();
 
   const discountPercent = product.originalPrice
     ? Math.round(
@@ -23,7 +24,8 @@ const ProductCard = ({ product }) => {
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
-    addToCart(product);
+    dispatch(addToCart(product));
+    dispatch(toggleCart());
   };
 
   return (

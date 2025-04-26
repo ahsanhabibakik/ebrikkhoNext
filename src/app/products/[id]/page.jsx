@@ -17,10 +17,11 @@ import {
   Sun,
   Thermometer,
 } from "lucide-react";
-import { useCart } from "@/context/CartContext";
+import { useAppDispatch } from "@/redux/hooks";
+import { addToCart, toggleCart } from "@/redux/slices/cartSlice";
 
 export default function ProductPage({ params }) {
-  const { addToCart } = useCart();
+  const dispatch = useAppDispatch();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const product = products.find((p) => p.id === parseInt(params.id));
@@ -39,7 +40,8 @@ export default function ProductPage({ params }) {
   }
 
   const handleAddToCart = () => {
-    addToCart(product, quantity);
+    dispatch(addToCart({ ...product, quantity }));
+    dispatch(toggleCart());
   };
 
   const handleQuantityChange = (value) => {

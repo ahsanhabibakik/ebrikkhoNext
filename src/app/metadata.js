@@ -13,8 +13,8 @@ export const geistMono = Geist_Mono({
 
 // Metadata with favicon support
 export const metadata = {
-  title: "Ebrikkho - Your Garden, Your Style",
-  description: "Shop for plants, gardening tools, and more at Ebrikkho.",
+  title: "Ebrikkho - Your Plant Paradise",
+  description: "Discover and shop the best plants for your home and garden",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon-32x32.png",

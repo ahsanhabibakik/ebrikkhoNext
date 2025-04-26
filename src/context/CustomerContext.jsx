@@ -1,53 +1,19 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
 const CustomerContext = createContext();
 
 export function CustomerProvider({ children }) {
-  const [customerInfo, setCustomerInfo] = useState(null);
+  const [customer, setCustomer] = useState(null);
 
-  useEffect(() => {
-    // Load customer info from localStorage on initial load
-    const savedCustomerInfo = localStorage.getItem("customerInfo");
-    if (savedCustomerInfo) {
-      setCustomerInfo(JSON.parse(savedCustomerInfo));
-    }
-  }, []);
-
-  const updateCustomerInfo = (info) => {
-    const updatedInfo = { ...customerInfo, ...info };
-    setCustomerInfo(updatedInfo);
-    localStorage.setItem("customerInfo", JSON.stringify(updatedInfo));
-  };
-
-  const getCustomerByPhone = async (phone) => {
-    try {
-      // Here you would typically make an API call to your backend
-      // For now, we'll simulate it with localStorage
-      const savedCustomerInfo = localStorage.getItem("customerInfo");
-      if (savedCustomerInfo) {
-        const customer = JSON.parse(savedCustomerInfo);
-        if (customer.phone === phone) {
-          setCustomerInfo(customer);
-          return customer;
-        }
-      }
-      return null;
-    } catch (error) {
-      console.error("Error fetching customer:", error);
-      return null;
-    }
+  const value = {
+    customer,
+    setCustomer,
   };
 
   return (
-    <CustomerContext.Provider
-      value={{
-        customerInfo,
-        updateCustomerInfo,
-        getCustomerByPhone,
-      }}
-    >
+    <CustomerContext.Provider value={value}>
       {children}
     </CustomerContext.Provider>
   );
@@ -55,7 +21,7 @@ export function CustomerProvider({ children }) {
 
 export function useCustomer() {
   const context = useContext(CustomerContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error("useCustomer must be used within a CustomerProvider");
   }
   return context;

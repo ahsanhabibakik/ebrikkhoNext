@@ -55,6 +55,9 @@ export const categories = [
     slug: "indoor-plants",
     icon: <Home className="w-12 h-12" />,
     description: "Perfect for your living spaces",
+    image:
+      "https://images.unsplash.com/photo-1512428813834-c702c7702b78?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    count: 24,
   },
   {
     id: 2,
@@ -62,6 +65,9 @@ export const categories = [
     slug: "office-plants",
     icon: <Building2 className="w-12 h-12" />,
     description: "Enhance your workspace",
+    image:
+      "https://images.unsplash.com/photo-1525498128493-380d1990a112?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    count: 18,
   },
   {
     id: 3,
@@ -69,6 +75,9 @@ export const categories = [
     slug: "outdoor-plants",
     icon: <Trees className="w-12 h-12" />,
     description: "Transform your garden",
+    image:
+      "https://images.unsplash.com/photo-1485955900006-10f4d324d411?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    count: 12,
   },
   {
     id: 4,
@@ -76,6 +85,9 @@ export const categories = [
     slug: "gift-plants",
     icon: <Gift className="w-12 h-12" />,
     description: "Perfect for any occasion",
+    image:
+      "https://images.unsplash.com/photo-1512428813834-c702c7702b78?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    count: 15,
   },
 ];
 
