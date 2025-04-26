@@ -38,7 +38,7 @@ export default function ContactPage() {
             bottomRight: { bottom: "12%", right: "8%", rotate: "-25" },
           }}
           additionalLeaves={additionalLeaves}
-          color="white"
+          color="orange-200"
         />
         <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
           <div className="text-center text-white">

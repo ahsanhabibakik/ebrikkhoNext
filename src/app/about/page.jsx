@@ -45,7 +45,7 @@ export default function AboutPage() {
             bottomRight: { bottom: "15%", right: "10%", rotate: "-30" },
           }}
           additionalLeaves={additionalLeaves}
-          color="white"
+          color="orange-200"
         />
         <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
           <div className="text-center text-white max-w-3xl">

@@ -20,7 +20,8 @@ export default function USPSection() {
   return (
     <section className="py-12 bg-orange-50 relative overflow-hidden">
       <LeafPattern
-        opacity={8}
+        opacity={20}
+        additionalLeavesOpacity={10}
         leafSizes={{
           topLeft: 40,
           topRight: 30,
@@ -34,7 +35,7 @@ export default function USPSection() {
           bottomRight: { bottom: "15%", right: "5%", rotate: "-30" },
         }}
         additionalLeaves={additionalLeaves}
-        color="orange-800"
+        color="orange-100"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

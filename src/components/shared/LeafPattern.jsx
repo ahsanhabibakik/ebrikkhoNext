@@ -5,6 +5,7 @@ import { Leaf } from "lucide-react";
 export default function LeafPattern({
   className = "",
   opacity = 10,
+  additionalLeavesOpacity = 10,
   leafSizes = {
     topLeft: 40,
     topRight: 30,
@@ -77,6 +78,7 @@ export default function LeafPattern({
             right: leaf.right,
             bottom: leaf.bottom,
             transform: `rotate(${leaf.rotate}deg)`,
+            opacity: additionalLeavesOpacity / 100,
           }}
         >
           <Leaf size={leaf.size} className={`text-${color}`} />

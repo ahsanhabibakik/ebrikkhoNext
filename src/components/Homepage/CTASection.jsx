@@ -32,7 +32,7 @@ export default function CTASection() {
           bottomRight: { bottom: "15%", right: "10%", rotate: "-30" },
         }}
         additionalLeaves={additionalLeaves}
-        color="white"
+        color="orange-200"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">

@@ -94,7 +94,7 @@ export default function ServicesPage() {
             bottomRight: { bottom: "18%", right: "12%", rotate: "-35" },
           }}
           additionalLeaves={additionalLeaves}
-          color="white"
+          color="orange-200"
         />
         <div className="relative container mx-auto px-4 h-full flex items-center justify-center">
           <div className="text-center text-white max-w-3xl">

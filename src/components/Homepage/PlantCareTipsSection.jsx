@@ -62,7 +62,7 @@ export default function PlantCareTipsSection({ tips }) {
           bottomRight: { bottom: "12%", right: "8%", rotate: "-25" },
         }}
         additionalLeaves={additionalLeaves}
-        color="orange-800"
+        color="orange-500"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

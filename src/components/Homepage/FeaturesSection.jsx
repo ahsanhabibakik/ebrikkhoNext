@@ -85,7 +85,7 @@ export default function FeaturesSection({ features }) {
           bottomRight: { bottom: "10%", right: "15%", rotate: "-30" },
         }}
         additionalLeaves={additionalLeaves}
-        color="orange-800"
+        color="orange-500"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
