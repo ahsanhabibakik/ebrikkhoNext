@@ -70,14 +70,14 @@ export default function CartSidebar() {
       {/* Overlay */}
       {isCartOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-10 z-30"
+          className="fixed inset-0 bg-black/20 bg-opacity-10 z-[998]"
           onClick={() => dispatch(toggleCart())}
         />
       )}
 
       {/* Sidebar */}
       <div
-        className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-40 ${
+        className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-[999] ${
           isCartOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
