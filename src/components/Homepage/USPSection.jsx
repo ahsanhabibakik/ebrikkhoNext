@@ -7,6 +7,16 @@ export default function USPSection() {
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
+            <Leaf className="w-10 h-10 text-green-600" />
+            Why Choose Us
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Discover the unique benefits of choosing our plant collection
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Image Section */}
           <div className="relative h-[500px] rounded-lg overflow-hidden">
@@ -20,25 +30,14 @@ export default function USPSection() {
 
           {/* Content Section */}
           <div className="space-y-8">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Blend Beauty & Purpose
-              </h2>
-              <p className="text-gray-600">
-                Transform your space with our carefully curated collection of
-                plants that bring both aesthetic appeal and functional benefits
-                to your home.
-              </p>
-            </div>
-
             <div className="space-y-6">
               {/* Living Decor */}
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Leaf className="w-6 h-6 text-green-600" />
+              <div className="flex items-start gap-4 p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                <div className="flex-shrink-0 w-14 h-14 bg-white rounded-lg flex items-center justify-center shadow-md">
+                  <Leaf className="w-8 h-8 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
                     Living Decor
                   </h3>
                   <p className="text-gray-600">
@@ -50,12 +49,12 @@ export default function USPSection() {
               </div>
 
               {/* Energy Boost */}
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-green-600" />
+              <div className="flex items-start gap-4 p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                <div className="flex-shrink-0 w-14 h-14 bg-white rounded-lg flex items-center justify-center shadow-md">
+                  <Zap className="w-8 h-8 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
                     Energy Boost
                   </h3>
                   <p className="text-gray-600">
@@ -68,12 +67,12 @@ export default function USPSection() {
               </div>
 
               {/* Timeless Elegance */}
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-6 h-6 text-green-600" />
+              <div className="flex items-start gap-4 p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                <div className="flex-shrink-0 w-14 h-14 bg-white rounded-lg flex items-center justify-center shadow-md">
+                  <Sparkles className="w-8 h-8 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
                     Timeless Elegance
                   </h3>
                   <p className="text-gray-600">

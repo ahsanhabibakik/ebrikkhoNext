@@ -67,7 +67,7 @@ export default function CartSidebar() {
       {/* Overlay */}
       {isCartOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-30 z-30"
+          className="fixed inset-0 bg-black bg-opacity-10 z-30"
           onClick={() => setIsCartOpen(false)}
         />
       )}

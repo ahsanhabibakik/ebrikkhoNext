@@ -3,7 +3,8 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const categories = [
+// Default categories in case none are provided
+const defaultCategories = [
   {
     id: 1,
     name: "Indoor Plants",
@@ -54,71 +55,37 @@ const categories = [
   },
 ];
 
-const PlantCategories = () => {
-  const scrollContainerRef = useRef(null);
+const PlantCategories = ({ categories = defaultCategories }) => {
+  const scrollRef = useRef(null);
 
   const scroll = (direction) => {
-    if (scrollContainerRef.current) {
-      const { current } = scrollContainerRef;
-      const scrollAmount = direction === "left" ? -200 : 200;
+    if (scrollRef.current) {
+      const { current } = scrollRef;
+      const scrollAmount = direction === "left" ? -300 : 300;
       current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
 
   return (
-    <section className="py-6 sm:py-8">
+    <section className="py-12 sm:py-16 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-4 sm:mb-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
-            Plant Categories
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">
+            Shop by Category
           </h2>
-          <p className="text-sm sm:text-base text-gray-600 mt-1">
-            Explore our diverse collection
+          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
+            Browse our wide selection of plants for every space and style
           </p>
         </div>
 
-        {/* Desktop view - grid */}
-        <div className="hidden md:grid grid-cols-3 lg:grid-cols-6 gap-3">
-          {categories.map((category) => (
-            <Link
-              href={`/categories/${category.name
-                .toLowerCase()
-                .replace(/\s+/g, "-")}`}
-              key={category.id}
-              className="group"
-            >
-              <div
-                className={`${category.color} rounded-lg p-3 transition-all duration-300 hover:shadow-md hover:-translate-y-1`}
-              >
-                <div className="relative w-full aspect-square mb-2">
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    fill
-                    className="object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <h3 className="text-sm font-medium text-gray-800 text-center">
-                  {category.name}
-                </h3>
-                <p className="text-xs text-gray-500 text-center">
-                  {category.count} items
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Mobile view - horizontal scrollable */}
-        <div className="md:hidden relative">
+        <div className="relative">
           <button
             onClick={() => scroll("left")}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-1.5 shadow-md z-10"
-            aria-label="Scroll left"
+            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md z-10 hover:bg-white transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
+              className="h-5 w-5 text-gray-700"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -133,35 +100,27 @@ const PlantCategories = () => {
           </button>
 
           <div
-            ref={scrollContainerRef}
-            className="flex overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            ref={scrollRef}
+            className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide snap-x snap-mandatory"
           >
             {categories.map((category) => (
               <Link
-                href={`/categories/${category.name
-                  .toLowerCase()
-                  .replace(/\s+/g, "-")}`}
                 key={category.id}
-                className="group flex-shrink-0 w-28 snap-center"
+                href={`/categories/${category.id}`}
+                className="flex-shrink-0 w-64 sm:w-72 snap-start"
               >
-                <div
-                  className={`${category.color} rounded-lg p-2 transition-all duration-300 hover:shadow-md mx-1`}
-                >
-                  <div className="relative w-full aspect-square mb-1">
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      fill
-                      className="object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
-                    />
+                <div className="relative h-48 sm:h-56 rounded-lg overflow-hidden group">
+                  <Image
+                    src={category.image}
+                    alt={category.name}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center">
+                    <h3 className="text-xl font-bold mb-1">{category.name}</h3>
+                    <p className="text-sm">{category.count} Products</p>
                   </div>
-                  <h3 className="text-xs font-medium text-gray-800 text-center line-clamp-1">
-                    {category.name}
-                  </h3>
-                  <p className="text-xs text-gray-500 text-center">
-                    {category.count} items
-                  </p>
                 </div>
               </Link>
             ))}
@@ -169,12 +128,11 @@ const PlantCategories = () => {
 
           <button
             onClick={() => scroll("right")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-1.5 shadow-md z-10"
-            aria-label="Scroll right"
+            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md z-10 hover:bg-white transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
+              className="h-5 w-5 text-gray-700"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -187,6 +145,29 @@ const PlantCategories = () => {
               />
             </svg>
           </button>
+        </div>
+
+        <div className="text-center mt-8">
+          <Link
+            href="/categories"
+            className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-medium"
+          >
+            View All Categories
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </Link>
         </div>
       </div>
     </section>
