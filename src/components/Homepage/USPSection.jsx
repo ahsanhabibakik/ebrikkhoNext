@@ -2,11 +2,28 @@
 
 import Image from "next/image";
 import { Leaf, Zap, Sparkles } from "lucide-react";
+import LeafPattern from "../shared/LeafPattern";
 
 export default function USPSection() {
   return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto px-4">
+    <section className="py-12 bg-orange-50 relative overflow-hidden">
+      <LeafPattern
+        opacity={5}
+        leafSizes={{
+          topLeft: 40,
+          topRight: 30,
+          bottomLeft: 35,
+          bottomRight: 25,
+        }}
+        leafPositions={{
+          topLeft: { top: "10%", left: "5%", rotate: "12" },
+          topRight: { top: "5%", right: "10%", rotate: "-12" },
+          bottomLeft: { bottom: "5%", left: "15%", rotate: "45" },
+          bottomRight: { bottom: "15%", right: "5%", rotate: "-30" },
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
             <Leaf className="w-10 h-10 text-green-600" />

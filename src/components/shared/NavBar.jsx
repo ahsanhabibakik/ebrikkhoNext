@@ -1,12 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, ShoppingCart, User, Search, ChevronDown, X } from "lucide-react";
+import {
+  Menu,
+  ShoppingCart,
+  User,
+  Search,
+  ChevronDown,
+  X,
+  Leaf,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import SearchModal from "./SearchModal";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toggleCart } from "@/redux/slices/cartSlice";
+import LeafPattern from "./LeafPattern";
 
 const placeholderTexts = [
   "Search indoor plants...",
@@ -59,8 +68,53 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="bg-orange-800 text-white shadow sticky top-0 z-50">
-      <div className="flex items-center justify-between px-4 py-2 md:px-6 lg:px-10 gap-2">
+    <nav className="bg-orange-800 text-white shadow sticky top-0 z-50 relative overflow-hidden">
+      {/* Enhanced decorative leaf pattern */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-10">
+        {/* Top row of leaves */}
+        <div className="absolute top-2 left-2 transform rotate-12">
+          <Leaf size={20} />
+        </div>
+        <div className="absolute top-2 left-1/4 transform rotate-45">
+          <Leaf size={16} />
+        </div>
+        <div className="absolute top-2 left-1/2 transform rotate-90">
+          <Leaf size={18} />
+        </div>
+        <div className="absolute top-2 left-3/4 transform rotate-135">
+          <Leaf size={14} />
+        </div>
+        <div className="absolute top-2 right-2 transform -rotate-12">
+          <Leaf size={20} />
+        </div>
+
+        {/* Bottom row of leaves */}
+        <div className="absolute bottom-2 left-2 transform -rotate-45">
+          <Leaf size={16} />
+        </div>
+        <div className="absolute bottom-2 left-1/4 transform -rotate-90">
+          <Leaf size={18} />
+        </div>
+        <div className="absolute bottom-2 left-1/2 transform -rotate-135">
+          <Leaf size={14} />
+        </div>
+        <div className="absolute bottom-2 left-3/4 transform -rotate-180">
+          <Leaf size={16} />
+        </div>
+        <div className="absolute bottom-2 right-2 transform rotate-45">
+          <Leaf size={20} />
+        </div>
+
+        {/* Center leaves */}
+        <div className="absolute top-1/2 left-1/4 transform rotate-30">
+          <Leaf size={22} />
+        </div>
+        <div className="absolute top-1/2 right-1/4 transform -rotate-30">
+          <Leaf size={22} />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between px-4 py-2 md:px-6 lg:px-10 gap-2 relative z-10">
         {/* Left: Logo & menu */}
         <div className="flex items-center gap-2">
           <button
@@ -177,7 +231,7 @@ export default function NavBar() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-orange-100 text-gray-800 shadow-md px-4 pb-4">
+        <div className="lg:hidden bg-orange-100 text-gray-800 shadow-md px-4 pb-4 relative z-10">
           <ul className="menu menu-vertical gap-2">
             <li>
               <Link

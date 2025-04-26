@@ -8,6 +8,9 @@ import {
   Phone,
   Leaf,
 } from "lucide-react";
+import Image from "next/image";
+import { Check } from "lucide-react";
+import LeafPattern from "../shared/LeafPattern";
 
 export default function FeaturesSection({ features }) {
   // Default features if none are provided
@@ -54,8 +57,24 @@ export default function FeaturesSection({ features }) {
   const displayFeatures = features || defaultFeatures;
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-16 bg-orange-50 relative overflow-hidden">
+      <LeafPattern
+        opacity={5}
+        leafSizes={{
+          topLeft: 45,
+          topRight: 35,
+          bottomLeft: 30,
+          bottomRight: 40,
+        }}
+        leafPositions={{
+          topLeft: { top: "15%", left: "10%", rotate: "12" },
+          topRight: { top: "10%", right: "15%", rotate: "-12" },
+          bottomLeft: { bottom: "15%", left: "10%", rotate: "45" },
+          bottomRight: { bottom: "10%", right: "15%", rotate: "-30" },
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
             <Leaf className="w-10 h-10 text-green-600" />

@@ -16,19 +16,71 @@ import {
 export default function Footer() {
   return (
     <footer className="bg-orange-800 text-white relative overflow-hidden">
-      {/* Decorative leaf pattern */}
+      {/* Enhanced decorative leaf pattern */}
       <div className="absolute top-0 left-0 w-full h-full opacity-10">
-        <div className="absolute top-10 left-10 transform rotate-12">
-          <Leaf size={40} />
+        {/* Top row of leaves */}
+        <div className="absolute top-4 left-4 transform rotate-12">
+          <Leaf size={24} />
         </div>
-        <div className="absolute top-20 right-20 transform -rotate-12">
-          <Leaf size={30} />
+        <div className="absolute top-4 left-1/4 transform rotate-45">
+          <Leaf size={20} />
         </div>
-        <div className="absolute bottom-10 left-20 transform rotate-45">
-          <Leaf size={25} />
+        <div className="absolute top-4 left-1/2 transform rotate-90">
+          <Leaf size={22} />
         </div>
-        <div className="absolute bottom-20 right-10 transform -rotate-30">
-          <Leaf size={35} />
+        <div className="absolute top-4 left-3/4 transform rotate-135">
+          <Leaf size={18} />
+        </div>
+        <div className="absolute top-4 right-4 transform -rotate-12">
+          <Leaf size={24} />
+        </div>
+
+        {/* Middle row of leaves */}
+        <div className="absolute top-1/2 left-4 transform -rotate-45">
+          <Leaf size={20} />
+        </div>
+        <div className="absolute top-1/2 left-1/4 transform -rotate-90">
+          <Leaf size={22} />
+        </div>
+        <div className="absolute top-1/2 left-1/2 transform -rotate-135">
+          <Leaf size={18} />
+        </div>
+        <div className="absolute top-1/2 left-3/4 transform -rotate-180">
+          <Leaf size={20} />
+        </div>
+        <div className="absolute top-1/2 right-4 transform rotate-45">
+          <Leaf size={24} />
+        </div>
+
+        {/* Bottom row of leaves */}
+        <div className="absolute bottom-4 left-4 transform rotate-45">
+          <Leaf size={20} />
+        </div>
+        <div className="absolute bottom-4 left-1/4 transform rotate-90">
+          <Leaf size={22} />
+        </div>
+        <div className="absolute bottom-4 left-1/2 transform rotate-135">
+          <Leaf size={18} />
+        </div>
+        <div className="absolute bottom-4 left-3/4 transform rotate-180">
+          <Leaf size={20} />
+        </div>
+        <div className="absolute bottom-4 right-4 transform -rotate-45">
+          <Leaf size={24} />
+        </div>
+
+        {/* Additional scattered leaves */}
+        <div className="absolute top-1/3 left-1/3 transform rotate-30">
+          <Leaf size={26} />
+        </div>
+        <div className="absolute top-2/3 right-1/3 transform -rotate-30">
+          <Leaf size={26} />
+        </div>
+        <div className="absolute top-1/4 right-1/4 transform rotate-60">
+          <Leaf size={22} />
+        </div>
+        <div className="absolute bottom-1/4 left-1/4 transform -rotate-60">
+          <Leaf size={22} />
         </div>
       </div>
 
