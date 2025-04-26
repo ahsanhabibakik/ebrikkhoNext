@@ -52,98 +52,123 @@ export const categories = [
 export const products = [
   {
     id: 1,
-    name: "Peace Lily",
-    category: "indoor",
-    price: 29.99,
-    image:
-      "https://images.unsplash.com/photo-1512428813834-c702c7702b78?w=500&auto=format&fit=crop&q=60",
-    rating: 4.8,
+    name: "Monstera Deliciosa",
+    price: 1200,
+    image: "https://images.unsplash.com/photo-1512428813834-c702c7702b78?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    category: "Indoor Plants",
+    description: "A popular tropical plant known for its large, glossy, perforated leaves. Perfect for adding a touch of the jungle to your home.",
+    rating: 4.5,
+    reviews: 128,
     isNew: true,
-    isBestSeller: false,
-    description: "A beautiful indoor plant with elegant white flowers",
+    isBestSeller: true,
+    stock: 15,
+    care: {
+      light: "Bright indirect light",
+      water: "Water when top soil is dry",
+      humidity: "High humidity preferred",
+      temperature: "65-85°F (18-29°C)"
+    }
   },
   {
     id: 2,
-    name: "Lavender",
-    category: "outdoor",
-    price: 24.99,
-    image:
-      "https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=500&auto=format&fit=crop&q=60",
-    rating: 4.9,
+    name: "Snake Plant",
+    price: 800,
+    image: "https://images.unsplash.com/photo-1525498128493-380d1990a112?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    category: "Indoor Plants",
+    description: "A hardy plant with stiff, upright leaves that are often variegated. Known for its air-purifying qualities and low maintenance needs.",
+    rating: 4.8,
+    reviews: 95,
     isNew: false,
     isBestSeller: true,
-    description: "Fragrant purple flowers perfect for gardens",
+    stock: 20,
+    care: {
+      light: "Low to bright indirect light",
+      water: "Water sparingly",
+      humidity: "Tolerates low humidity",
+      temperature: "60-85°F (15-29°C)"
+    }
   },
   {
     id: 3,
-    name: "Jade Plant",
-    category: "succulents",
-    price: 19.99,
-    image:
-      "https://images.unsplash.com/photo-1512428813834-c702c7702b78?w=500&auto=format&fit=crop&q=60",
-    rating: 4.7,
-    isNew: false,
-    isBestSeller: true,
-    description: "A popular succulent with thick, glossy leaves",
+    name: "Fiddle Leaf Fig",
+    price: 1500,
+    image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    category: "Indoor Plants",
+    description: "A stunning plant with large, violin-shaped leaves. Makes a bold statement in any room.",
+    rating: 4.3,
+    reviews: 76,
+    isNew: true,
+    isBestSeller: false,
+    stock: 10,
+    care: {
+      light: "Bright indirect light",
+      water: "Water when top soil is dry",
+      humidity: "Moderate humidity",
+      temperature: "65-75°F (18-24°C)"
+    }
   },
   {
     id: 4,
-    name: "Basil",
-    category: "herbs",
-    price: 14.99,
-    image:
-      "https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=500&auto=format&fit=crop&q=60",
+    name: "Peace Lily",
+    price: 900,
+    image: "https://images.unsplash.com/photo-1512428813834-c702c7702b78?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    category: "Indoor Plants",
+    description: "An elegant plant with glossy leaves and white flowers. Known for its air-purifying properties.",
     rating: 4.6,
-    isNew: true,
-    isBestSeller: false,
-    description: "Aromatic herb perfect for cooking",
+    reviews: 112,
+    isNew: false,
+    isBestSeller: true,
+    stock: 18,
+    care: {
+      light: "Low to bright indirect light",
+      water: "Keep soil moist",
+      humidity: "High humidity preferred",
+      temperature: "65-80°F (18-27°C)"
+    }
   },
   {
     id: 5,
-    name: "Japanese Maple Bonsai",
-    category: "bonsai",
-    price: 89.99,
-    image:
-      "https://images.unsplash.com/photo-1512428813834-c702c7702b78?w=500&auto=format&fit=crop&q=60",
-    rating: 4.9,
-    isNew: false,
-    isBestSeller: true,
-    description: "Elegant miniature tree with stunning foliage",
+    name: "Succulent Collection",
+    price: 600,
+    image: "https://images.unsplash.com/photo-1525498128493-380d1990a112?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    category: "Succulents",
+    description: "A beautiful collection of various succulents, perfect for beginners and collectors alike.",
+    rating: 4.7,
+    reviews: 89,
+    isNew: true,
+    isBestSeller: false,
+    stock: 25,
+    care: {
+      light: "Bright direct light",
+      water: "Water sparingly",
+      humidity: "Low humidity",
+      temperature: "60-80°F (15-27°C)"
+    }
   },
   {
     id: 6,
-    name: "Tillandsia",
-    category: "air-plants",
-    price: 22.99,
-    image:
-      "https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=500&auto=format&fit=crop&q=60",
-    rating: 4.7,
-    isNew: true,
-    isBestSeller: false,
-    description: "Unique air plant that requires no soil",
-  },
-  {
-    id: 7,
-    name: "Orchid",
-    category: "flowering",
-    price: 34.99,
-    image:
-      "https://images.unsplash.com/photo-1512428813834-c702c7702b78?w=500&auto=format&fit=crop&q=60",
-    rating: 4.8,
-    isNew: false,
-    isBestSeller: true,
-    description: "Exotic flowering plant with stunning blooms",
-  },
-  {
-    id: 8,
-    name: "Snake Plant",
-    category: "indoor",
-    price: 27.99,
-    image:
-      "https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=500&auto=format&fit=crop&q=60",
+    name: "Bonsai Tree",
+    price: 2000,
+    image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    category: "Bonsai",
+    description: "A carefully cultivated miniature tree, perfect for adding a touch of zen to your space.",
     rating: 4.9,
+    reviews: 45,
     isNew: false,
     isBestSeller: true,
-    description: "Low-maintenance indoor plant that purifies air",
-  },
+    stock: 8,
+    care: {
+      light: "Bright indirect light",
+      water: "Keep soil moist",
+      humidity: "Moderate humidity",
+      temperature: "60-75°F (15-24°C)"
+    }
+  }
+];
+
+export const sortOptions = [
+  { value: "price-low-high", label: "Price: Low to High" },
+  { value: "price-high-low", label: "Price: High to Low" },
+  { value: "rating", label: "Highest Rated" },
+  { value: "newest", label: "Newest First" }
 ];

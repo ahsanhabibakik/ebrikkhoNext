@@ -121,15 +121,19 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-orange-100">
                 <MapPin size={18} />
-                <span>123 Green Street, Plant City</span>
+                <span>House 1217, Road 10, Avenue 10, Mirpur DOHS, Dhaka</span>
               </li>
               <li className="flex items-center gap-2 text-orange-100">
                 <Phone size={18} />
-                <span>+1 234 567 890</span>
+                <span>01518926700</span>
+              </li>
+              <li className="flex items-center gap-2 text-orange-100">
+                <Phone size={18} />
+                <span>01773995858</span>
               </li>
               <li className="flex items-center gap-2 text-orange-100">
                 <Mail size={18} />
-                <span>hello@ebrikkho.com</span>
+                <span>ebrikkho2024@gmail.com</span>
               </li>
             </ul>
           </div>

@@ -2,8 +2,8 @@ const products = [
   {
     id: 1,
     name: "Monstera Deliciosa",
-    price: 99.99,
-    originalPrice: 129.99,
+    price: 2500,
+    originalPrice: 3000,
     rating: 4.5,
     buyers: 76,
     stock: 12,
@@ -15,8 +15,8 @@ const products = [
   {
     id: 2,
     name: "Fiddle Leaf Fig",
-    price: 149.99,
-    originalPrice: 189.99,
+    price: 3500,
+    originalPrice: 4000,
     rating: 4.8,
     buyers: 104,
     stock: 7,
@@ -28,8 +28,8 @@ const products = [
   {
     id: 3,
     name: "Snake Plant",
-    price: 199.99,
-    originalPrice: 229.99,
+    price: 1200,
+    originalPrice: 1500,
     rating: 4.3,
     buyers: 89,
     stock: 0, // Out of stock
@@ -41,8 +41,8 @@ const products = [
   {
     id: 4,
     name: "Peace Lily",
-    price: 79.99,
-    originalPrice: 99.99,
+    price: 1800,
+    originalPrice: 2200,
     rating: 4.6,
     buyers: 53,
     stock: 21,
@@ -54,8 +54,8 @@ const products = [
   {
     id: 5,
     name: "Pothos",
-    price: 129.99,
-    originalPrice: 159.99,
+    price: 1500,
+    originalPrice: 1800,
     rating: 4.7,
     buyers: 142,
     stock: 18,
@@ -67,8 +67,8 @@ const products = [
   {
     id: 6,
     name: "ZZ Plant",
-    price: 89.99,
-    originalPrice: 109.99,
+    price: 2000,
+    originalPrice: 2500,
     rating: 4.4,
     buyers: 95,
     stock: 0, // Out of stock
