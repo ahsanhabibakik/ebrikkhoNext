@@ -67,14 +67,14 @@ export default function CartSidebar() {
       {/* Overlay */}
       {isCartOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 bg-black bg-opacity-30 z-30"
           onClick={() => setIsCartOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div
-        className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
+        className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-40 ${
           isCartOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -86,7 +86,7 @@ export default function CartSidebar() {
             </h2>
             <button
               onClick={() => setIsCartOpen(false)}
-              className="p-2 hover:bg-gray-100 rounded-full"
+              className="p-2  bg-gray-500 hover:bg-gray-400 rounded-full"
             >
               <X className="w-5 h-5" />
             </button>

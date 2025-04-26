@@ -51,6 +51,10 @@ export default function TermsOfService() {
                     Orders may be cancelled if payment is not received or
                     verified
                   </li>
+                  <li>
+                    bKash payments receive a 5% discount, with a maximum
+                    discount of ৳200
+                  </li>
                 </ul>
               </div>
             </section>

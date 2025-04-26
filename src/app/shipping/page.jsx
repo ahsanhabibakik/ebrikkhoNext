@@ -1,6 +1,13 @@
 "use client";
 
-import { Truck, Package, Clock, MapPin, AlertCircle } from "lucide-react";
+import {
+  Truck,
+  Package,
+  Clock,
+  MapPin,
+  AlertCircle,
+  CreditCard,
+} from "lucide-react";
 
 export default function ShippingPolicy() {
   return (
@@ -51,6 +58,23 @@ export default function ShippingPolicy() {
                     information
                   </li>
                   <li>Delivery times may vary based on your location</li>
+                </ul>
+              </div>
+            </section>
+
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <CreditCard className="w-6 h-6 text-orange-600" />
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Payment Discounts
+                </h2>
+              </div>
+              <div className="space-y-4 text-gray-600">
+                <ul className="list-disc pl-6 space-y-2">
+                  <li>bKash payments receive a 5% discount on your order</li>
+                  <li>The maximum bKash discount is capped at ৳200</li>
+                  <li>Discount is automatically applied at checkout</li>
+                  <li>Discount cannot be combined with other promotions</li>
                 </ul>
               </div>
             </section>
