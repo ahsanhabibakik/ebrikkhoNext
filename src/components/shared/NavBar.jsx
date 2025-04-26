@@ -42,6 +42,7 @@ export default function NavBar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [closeTimeout, setCloseTimeout] = useState(null);
 
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
@@ -49,6 +50,23 @@ export default function NavBar() {
 
   const getCartCount = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  // Handle opening the categories dropdown
+  const handleOpenCategories = () => {
+    if (closeTimeout) {
+      clearTimeout(closeTimeout);
+      setCloseTimeout(null);
+    }
+    setIsCategoriesOpen(true);
+  };
+
+  // Handle closing the categories dropdown with a delay
+  const handleCloseCategories = () => {
+    const timeout = setTimeout(() => {
+      setIsCategoriesOpen(false);
+    }, 300); // 300ms delay before closing
+    setCloseTimeout(timeout);
   };
 
   useEffect(() => {
@@ -60,15 +78,35 @@ export default function NavBar() {
     return () => clearInterval(interval);
   }, []);
 
+  // Add effect to handle clicking outside the categories dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const categoriesDropdown = document.getElementById("categories-dropdown");
+      const categoriesButton = document.getElementById("categories-button");
+
+      if (isCategoriesOpen && categoriesDropdown && categoriesButton) {
+        if (
+          !categoriesDropdown.contains(event.target) &&
+          !categoriesButton.contains(event.target)
+        ) {
+          setIsCategoriesOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isCategoriesOpen]);
+
   const handleSearch = (e) => {
     e.preventDefault();
-    if (e.target.closest("button")) {
-      setIsSearchOpen(true);
-    }
+    setIsSearchOpen(true);
   };
 
   return (
-    <nav className="bg-orange-800 text-white shadow sticky top-0 z-50 relative overflow-hidden">
+    <nav className="bg-orange-800 text-white shadow sticky top-0 z-50 relative">
       {/* Enhanced decorative leaf pattern */}
       <div className="absolute top-0 left-0 w-full h-full opacity-10">
         {/* Top row of leaves */}
@@ -114,7 +152,7 @@ export default function NavBar() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-4 py-2 md:px-6 lg:px-10 gap-2 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-2 relative z-10">
         {/* Left: Logo & menu */}
         <div className="flex items-center gap-2">
           <button
@@ -139,13 +177,20 @@ export default function NavBar() {
           </Link>
           <div className="relative">
             <button
-              onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+              id="categories-button"
+              onMouseEnter={handleOpenCategories}
+              onMouseLeave={handleCloseCategories}
               className="flex items-center gap-1 hover:text-orange-200 transition-colors"
             >
               Categories <ChevronDown size={14} />
             </button>
             {isCategoriesOpen && (
-              <div className="absolute top-full left-0 mt-2 w-64 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-50">
+              <div
+                id="categories-dropdown"
+                onMouseEnter={handleOpenCategories}
+                onMouseLeave={handleCloseCategories}
+                className="absolute top-full left-0 mt-2 w-64 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-[100]"
+              >
                 {categories.map((category) => (
                   <Link
                     key={category.name}
@@ -182,29 +227,31 @@ export default function NavBar() {
         {/* Right: Search and Icons */}
         <div className="flex items-center gap-2">
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="hidden lg:flex">
-            <div
-              className={`join w-full transition-all duration-200 ${
-                isSearchFocused ? "ring-2 ring-orange-300" : ""
-              }`}
-            >
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={placeholder}
-                className="input input-bordered join-item w-full placeholder:text-sm text-sm bg-white/10 text-white placeholder:text-white/70 focus:outline-none focus:bg-white/20"
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
-              />
-              <button
-                type="submit"
-                className="btn join-item bg-orange-600 hover:bg-orange-700 text-white border-orange-600"
+          <div className="hidden lg:flex" onClick={() => setIsSearchOpen(true)}>
+            <form onSubmit={handleSearch} className="w-full">
+              <div
+                className={`join w-full transition-all duration-200 ${
+                  isSearchFocused ? "ring-2 ring-orange-300" : ""
+                }`}
               >
-                <Search size={18} />
-              </button>
-            </div>
-          </form>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={placeholder}
+                  className="input input-bordered join-item w-full placeholder:text-sm text-sm bg-white/10 text-white placeholder:text-white/70 focus:outline-none focus:bg-white/20"
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setIsSearchFocused(false)}
+                />
+                <button
+                  type="submit"
+                  className="btn join-item bg-orange-600 hover:bg-orange-700 text-white border-orange-600"
+                >
+                  <Search size={18} />
+                </button>
+              </div>
+            </form>
+          </div>
 
           {/* Mobile Search Icon */}
           <button

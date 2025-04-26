@@ -6,12 +6,15 @@ import { Dialog } from "@headlessui/react";
 import { Heart, ShoppingCart, Tag } from "lucide-react";
 import { useAppDispatch } from "@/redux/hooks";
 import { addToCart, toggleCart } from "@/redux/slices/cartSlice";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const ProductCard = ({ product }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const discountPercent = product.originalPrice
     ? Math.round(
@@ -20,7 +23,10 @@ const ProductCard = ({ product }) => {
     : null;
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
-  const toggleFavorite = () => setIsFavorite(!isFavorite);
+  const toggleFavorite = (e) => {
+    e.stopPropagation();
+    setIsFavorite(!isFavorite);
+  };
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
@@ -28,11 +34,15 @@ const ProductCard = ({ product }) => {
     dispatch(toggleCart());
   };
 
+  const handleCardClick = () => {
+    router.push(`/products/${product.id}`);
+  };
+
   return (
     <>
       <div
         className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-        onClick={toggleModal}
+        onClick={handleCardClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >

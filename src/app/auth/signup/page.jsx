@@ -2,9 +2,8 @@
 
 import AuthForm from "@/components/auth/AuthForm";
 import Image from "next/image";
-import Link from "next/link";
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
@@ -12,25 +11,17 @@ export default function LoginPage() {
           <div className="w-full md:w-1/2">
             <div className="text-center md:text-left mb-8">
               <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                Welcome to Ebrikkho
+                Join Ebrikkho
               </h1>
               <p className="text-lg text-gray-600">
-                Sign in to your account to manage your plants, track orders, and
-                access exclusive content.
+                Create an account to start your plant journey with us. Get
+                access to exclusive offers, track your orders, and more.
               </p>
-              <div className="mt-4">
-                <Link
-                  href="/auth/signup"
-                  className="text-orange-600 hover:text-orange-700 font-medium"
-                >
-                  Don't have an account? Sign up here
-                </Link>
-              </div>
             </div>
             <div className="relative h-64 md:h-96 w-full">
               <Image
-                src="https://images.unsplash.com/photo-1512428813834-c702c7702b78?w=800&auto=format&fit=crop&q=60"
-                alt="Plant care"
+                src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800&auto=format&fit=crop&q=60"
+                alt="Plant collection"
                 fill
                 className="object-cover rounded-xl"
                 priority
@@ -38,7 +29,7 @@ export default function LoginPage() {
             </div>
           </div>
           <div className="w-full md:w-1/2">
-            <AuthForm mode="login" />
+            <AuthForm mode="register" />
           </div>
         </div>
       </div>

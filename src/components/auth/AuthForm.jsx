@@ -3,9 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { useAppDispatch } from "@/redux/hooks";
+import { loginSuccess } from "@/redux/slices/authSlice";
 
 export default function AuthForm({ mode = "login" }) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -22,22 +25,35 @@ export default function AuthForm({ mode = "login" }) {
     setLoading(true);
 
     try {
-      // TODO: Replace with actual API call
-      const response = await fetch(`/api/auth/${mode}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Something went wrong");
+      // Validate form data
+      if (mode === "register") {
+        if (formData.password !== formData.confirmPassword) {
+          throw new Error("Passwords do not match");
+        }
+        if (formData.password.length < 6) {
+          throw new Error("Password must be at least 6 characters");
+        }
+        if (!formData.name) {
+          throw new Error("Name is required");
+        }
       }
 
-      // Redirect to profile or home page
+      // Mock authentication - in a real app, this would be an API call
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Create a mock user object
+      const user = {
+        id: Date.now().toString(),
+        name: formData.name || "User",
+        email: formData.email,
+        createdAt: new Date().toISOString(),
+      };
+
+      // Dispatch login success action
+      dispatch(loginSuccess(user));
+
+      // Redirect to account page
       router.push("/account");
     } catch (err) {
       setError(err.message);
@@ -222,7 +238,7 @@ export default function AuthForm({ mode = "login" }) {
             ? "Don't have an account?"
             : "Already have an account?"}{" "}
           <a
-            href={mode === "login" ? "/auth/register" : "/auth/login"}
+            href={mode === "login" ? "/auth/signup" : "/auth/login"}
             className="text-orange-600 hover:text-orange-700 font-medium"
           >
             {mode === "login" ? "Sign up" : "Sign in"}

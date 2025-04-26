@@ -3,15 +3,22 @@
 import Image from "next/image";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/products/${product.id}`);
+  };
 
   return (
     <div
-      className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+      className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={handleCardClick}
     >
       <div className="relative h-72">
         <Image
@@ -36,7 +43,13 @@ export default function ProductCard({ product }) {
             Best Seller
           </div>
         )}
-        <button className="absolute bottom-3 right-3 bg-white/90 text-orange-600 p-2.5 rounded-full hover:bg-white transition-colors">
+        <button
+          className="absolute bottom-3 right-3 bg-white/90 text-orange-600 p-2.5 rounded-full hover:bg-white transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            // Add to wishlist functionality can be added here
+          }}
+        >
           <Heart className="w-5 h-5" />
         </button>
       </div>
@@ -64,7 +77,13 @@ export default function ProductCard({ product }) {
           <span className="text-2xl font-bold text-gray-900">
             ${product.price}
           </span>
-          <button className="bg-orange-600 text-white p-2.5 rounded-lg hover:bg-orange-700 transition-colors">
+          <button
+            className="bg-orange-600 text-white p-2.5 rounded-lg hover:bg-orange-700 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              // Add to cart functionality can be added here
+            }}
+          >
             <ShoppingCart className="w-5 h-5" />
           </button>
         </div>
