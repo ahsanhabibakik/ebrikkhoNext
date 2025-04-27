@@ -155,7 +155,7 @@ export default function NavBar() {
         {/* Left: Logo & menu */}
         <div className="flex items-center gap-2">
           <button
-            className="btn btn-ghost btn-circle lg:hidden text-white"
+            className="btn btn-ghost btn-circle lg:hidden text-white hover:bg-orange-700/20 active:bg-orange-700/30"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -254,17 +254,20 @@ export default function NavBar() {
 
           {/* Mobile Search Icon */}
           <button
-            className="btn btn-ghost btn-circle lg:hidden"
+            className="btn btn-ghost btn-circle lg:hidden hover:bg-orange-700/20 active:bg-orange-700/30"
             onClick={() => setIsSearchOpen(true)}
           >
             <Search size={20} />
           </button>
 
-          <Link href="/account" className="btn btn-ghost btn-circle">
+          <Link
+            href="/account"
+            className="btn btn-ghost btn-circle hover:bg-orange-700/20 active:bg-orange-700/30"
+          >
             <User size={20} />
           </Link>
           <button
-            className="btn btn-ghost btn-circle relative"
+            className="btn btn-ghost btn-circle relative hover:bg-orange-700/20 active:bg-orange-700/30"
             onClick={() => dispatch(toggleCart())}
           >
             <PiBasketThin size={20} />
