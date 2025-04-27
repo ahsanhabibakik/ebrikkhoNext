@@ -1,9 +1,9 @@
 "use client";
 
+import { use } from "react";
 import { Calendar, Clock, Tag, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 
 // This would typically come from an API or database
 const blogPosts = {
@@ -75,9 +75,9 @@ const blogPosts = {
   },
 };
 
-export default function BlogPostPage() {
-  const params = useParams();
-  const post = blogPosts[params.id];
+export default function BlogPostPage({ params }) {
+  const resolvedParams = use(params);
+  const post = blogPosts[resolvedParams.id];
 
   if (!post) {
     return (
@@ -98,52 +98,54 @@ export default function BlogPostPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <div className="relative h-[400px]">
-        <div className="absolute inset-0 bg-black/40" />
         <Image
           src={post.image}
           alt={post.title}
           fill
           className="object-cover"
         />
-        <div className="relative container mx-auto px-4 h-full flex items-center">
-          <div className="max-w-3xl">
-            <Link
-              href="/blog"
-              className="inline-flex items-center text-white mb-4 hover:text-green-200"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Blog
-            </Link>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white max-w-3xl px-4">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
               {post.title}
             </h1>
-            <div className="flex items-center gap-4 text-white/80">
-              <div className="flex items-center gap-1">
+            <div className="flex items-center justify-center gap-4 text-sm">
+              <span className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
                 {post.date}
-              </div>
-              <div className="flex items-center gap-1">
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
                 <Clock className="w-4 h-4" />
                 {post.readTime}
-              </div>
-              <div className="flex items-center gap-1">
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
                 <Tag className="w-4 h-4" />
                 {post.category}
-              </div>
+              </span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <div
-              className="prose prose-lg prose-green max-w-none"
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-8">
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 text-green-600 hover:text-green-700"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Blog
+            </Link>
           </div>
+          <div
+            className="prose prose-lg max-w-none"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
         </div>
       </div>
     </div>

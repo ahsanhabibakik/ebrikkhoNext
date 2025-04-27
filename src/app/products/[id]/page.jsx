@@ -469,38 +469,38 @@ export default function ProductPage() {
                 </div>
               )}
 
-              {activeTab === "care" && (
+              {activeTab === "care" && product.care && (
                 <div>
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="flex items-start gap-3">
-                      <Sun className="w-5 h-5 text-orange-600 mt-1" />
-                      <div>
-                        <p className="font-medium text-gray-900">Light</p>
-                        <p className="text-gray-600">{product.care.light}</p>
-                      </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                        <Sun size={18} className="text-orange-600" />
+                        Light Requirements
+                      </h3>
+                      <p className="text-gray-600">{product.care.light}</p>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <Droplet className="w-5 h-5 text-blue-600 mt-1" />
-                      <div>
-                        <p className="font-medium text-gray-900">Water</p>
-                        <p className="text-gray-600">{product.care.water}</p>
-                      </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                        <Droplet size={18} className="text-blue-600" />
+                        Watering Needs
+                      </h3>
+                      <p className="text-gray-600">{product.care.water}</p>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <Leaf className="w-5 h-5 text-green-600 mt-1" />
-                      <div>
-                        <p className="font-medium text-gray-900">Humidity</p>
-                        <p className="text-gray-600">{product.care.humidity}</p>
-                      </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                        <Leaf size={18} className="text-green-600" />
+                        Humidity
+                      </h3>
+                      <p className="text-gray-600">{product.care.humidity}</p>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <Thermometer className="w-5 h-5 text-red-600 mt-1" />
-                      <div>
-                        <p className="font-medium text-gray-900">Temperature</p>
-                        <p className="text-gray-600">
-                          {product.care.temperature}
-                        </p>
-                      </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                        <Thermometer size={18} className="text-red-600" />
+                        Temperature
+                      </h3>
+                      <p className="text-gray-600">
+                        {product.care.temperature}
+                      </p>
                     </div>
                   </div>
 
@@ -526,7 +526,7 @@ export default function ProductPage() {
               {activeTab === "features" && (
                 <div>
                   <ul className="space-y-3">
-                    {product.features.map((feature, index) => (
+                    {product.features?.map((feature, index) => (
                       <li key={index} className="flex items-start gap-3">
                         <Check className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
                         <span className="text-gray-600">{feature}</span>

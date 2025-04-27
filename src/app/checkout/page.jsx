@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Select from "react-select";
 import {
@@ -22,6 +22,11 @@ import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { clearCart } from "@/redux/slices/cartSlice";
 import { updateCustomerInfo } from "@/redux/slices/authSlice";
+import {
+  saveCustomerData,
+  getCustomerData,
+  saveOrderHistory,
+} from "@/utils/customerData";
 
 // Bangladesh address data
 const divisions = [
@@ -321,6 +326,30 @@ export default function CheckoutPage() {
 
       // Clear cart and redirect to success page
       dispatch(clearCart());
+
+      // Save customer data for future orders
+      const customerData = {
+        phone: phoneNumber,
+        shipping: shippingInfo,
+        payment: paymentInfo,
+        lastOrderDate: new Date().toISOString(),
+      };
+
+      saveCustomerData(customerData);
+
+      // Save order to history
+      const orderData = {
+        id: uniqueOrderId,
+        date: new Date().toISOString(),
+        items: cartItems,
+        shipping: shippingInfo,
+        payment: paymentInfo,
+        total: getFinalTotal(),
+        status: "Processing",
+      };
+
+      saveOrderHistory(orderData);
+
       router.push("/checkout/success");
     } catch (error) {
       toast.error("Failed to place order. Please try again.");
@@ -401,6 +430,26 @@ export default function CheckoutPage() {
       paymentMethod: selected,
     });
   };
+
+  // Load saved customer data on component mount
+  useEffect(() => {
+    const savedCustomerData = getCustomerData();
+    if (savedCustomerData) {
+      // Pre-fill form with saved customer data
+      if (savedCustomerData.phone) {
+        setPhoneNumber(savedCustomerData.phone);
+        setOtpVerified(true);
+      }
+
+      if (savedCustomerData.shipping) {
+        setShippingInfo(savedCustomerData.shipping);
+      }
+
+      if (savedCustomerData.payment) {
+        setPaymentInfo(savedCustomerData.payment);
+      }
+    }
+  }, []);
 
   if (cartItems.length === 0) {
     return (
