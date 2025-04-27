@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, User, Search, ChevronDown, X, Leaf } from "lucide-react";
+import { Menu, ChevronDown, X, Leaf } from "lucide-react";
 import { PiBasketThin } from "react-icons/pi";
+import { VscAccount } from "react-icons/vsc";
+import { BsSearch } from "react-icons/bs";
 import Link from "next/link";
 import Image from "next/image";
 import SearchModal from "./SearchModal";
@@ -166,6 +168,27 @@ export default function NavBar() {
           </Link>
         </div>
 
+        {/* Center: Search */}
+        <div className="hidden lg:flex flex-1 max-w-xl mx-4">
+          <form onSubmit={handleSearch} className="w-full">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder={placeholder}
+                className="w-full px-4 py-2 pl-10 pr-4 rounded-lg bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
+              />
+              <BsSearch
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-white/70"
+                size={18}
+              />
+            </div>
+          </form>
+        </div>
+
         {/* Right: Navigation Links */}
         <div className="hidden lg:flex items-center gap-6 text-sm font-medium">
           <Link
@@ -223,57 +246,32 @@ export default function NavBar() {
           </Link>
         </div>
 
-        {/* Right: Search and Icons */}
-        <div className="flex items-center gap-2">
-          {/* Search Bar */}
-          <div className="hidden lg:flex" onClick={() => setIsSearchOpen(true)}>
-            <form onSubmit={handleSearch} className="w-full">
-              <div
-                className={`join w-full transition-all duration-200 ${
-                  isSearchFocused ? "ring-2 ring-orange-300" : ""
-                }`}
-              >
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={placeholder}
-                  className="input input-bordered join-item w-full placeholder:text-sm text-sm bg-white/10 text-white placeholder:text-white/70 focus:outline-none focus:bg-white/20"
-                  onFocus={() => setIsSearchFocused(true)}
-                  onBlur={() => setIsSearchFocused(false)}
-                />
-                <button
-                  type="submit"
-                  className="btn join-item bg-orange-600 hover:bg-orange-700 text-white border-orange-600"
-                >
-                  <Search size={18} />
-                </button>
-              </div>
-            </form>
-          </div>
-
+        {/* Right: Icons */}
+        <div className="flex items-center gap-4">
           {/* Mobile Search Icon */}
           <button
-            className="btn btn-ghost btn-circle lg:hidden hover:bg-orange-700/20 active:bg-orange-700/30"
+            className="btn btn-ghost btn-circle lg:hidden text-white hover:bg-orange-700/20 active:bg-orange-700/30"
             onClick={() => setIsSearchOpen(true)}
           >
-            <Search size={20} />
+            <BsSearch size={20} />
           </button>
 
           <Link
             href="/account"
-            className="btn btn-ghost btn-circle hover:bg-orange-700/20 active:bg-orange-700/30"
+            className="btn btn-ghost btn-circle text-white hover:bg-orange-700/20 active:bg-orange-700/30"
           >
-            <User size={20} />
+            <VscAccount size={20} />
           </Link>
           <button
-            className="btn btn-ghost btn-circle relative hover:bg-orange-700/20 active:bg-orange-700/30"
             onClick={() => dispatch(toggleCart())}
+            className="btn btn-ghost btn-circle text-white hover:bg-orange-700/20 active:bg-orange-700/30 relative"
           >
             <PiBasketThin size={20} />
-            <span className="badge badge-sm badge-primary absolute -top-1 -right-1">
-              {mounted ? getCartCount() : 0}
-            </span>
+            {getCartCount() > 0 && (
+              <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                {getCartCount()}
+              </span>
+            )}
           </button>
         </div>
       </div>
@@ -343,10 +341,13 @@ export default function NavBar() {
       )}
 
       {/* Search Modal */}
-      <SearchModal
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-      />
+      {isSearchOpen && (
+        <SearchModal
+          isOpen={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
+          initialQuery={searchQuery}
+        />
+      )}
     </nav>
   );
 }

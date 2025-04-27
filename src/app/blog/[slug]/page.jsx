@@ -9,7 +9,7 @@ import {
   Share2,
   Facebook,
   Twitter,
-  LinkedIn,
+  Link,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -123,7 +123,7 @@ export default function BlogPostPage({ params }) {
                   <Twitter className="w-5 h-5" />
                 </button>
                 <button className="p-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors">
-                  <LinkedIn className="w-5 h-5" />
+                  <Link className="w-5 h-5" />
                 </button>
               </div>
             </div>

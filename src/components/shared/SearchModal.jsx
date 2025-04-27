@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Search, Tag, Clock, TrendingUp, Leaf, Filter } from "lucide-react";
+import { X, Tag, Clock, TrendingUp, Leaf, Filter } from "lucide-react";
+import { BsSearch } from "react-icons/bs";
 import Image from "next/image";
 import Link from "next/link";
 import products from "@/lib/products";
@@ -110,17 +111,13 @@ export default function SearchModal({ isOpen, onClose }) {
                     className="w-full px-4 py-3 pl-12 pr-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 text-gray-800 placeholder-gray-400"
                     autoFocus
                   />
-                  <Search
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                    size={20}
-                  />
+                  <button
+                    type="submit"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <BsSearch size={20} />
+                  </button>
                 </div>
-                <button
-                  type="submit"
-                  className="px-4 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl transition-colors duration-200 font-medium"
-                >
-                  Search
-                </button>
                 <button
                   onClick={onClose}
                   className="p-2.5 hover:bg-gray-100 rounded-xl transition-colors duration-200 text-gray-600 hover:text-gray-800"
@@ -300,22 +297,11 @@ export default function SearchModal({ isOpen, onClose }) {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                  <Search className="text-gray-400" size={24} />
-                </div>
-                <p className="text-gray-500 text-lg">
+              <div className="flex flex-col items-center justify-center text-gray-400 py-12">
+                <BsSearch className="text-gray-400" size={24} />
+                <p className="mt-4 text-gray-500">
                   No products found matching your search.
                 </p>
-                <p className="text-gray-400 text-sm mt-2">
-                  Try different keywords or browse our collection
-                </p>
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="mt-4 px-4 py-2 bg-orange-100 text-orange-600 rounded-lg hover:bg-orange-200 transition-colors"
-                >
-                  Clear Search
-                </button>
               </div>
             )}
           </div>
