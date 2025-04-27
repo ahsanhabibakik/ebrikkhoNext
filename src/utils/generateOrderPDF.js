@@ -142,14 +142,14 @@ export const generateOrderPDF = (orderDetails) => {
   // Define dimensions
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 15;
+  const margin = 8;
   const contentWidth = pageWidth - margin * 2;
 
   // Calculate available space for items table
-  const headerHeight = 100; // Approximate height of header section
-  const footerHeight = 50; // Approximate height of footer section
-  const summaryHeight = 70; // Height of summary section
-  const paymentInfoHeight = 30; // Height of payment info section
+  const headerHeight = 60;
+  const footerHeight = 30;
+  const summaryHeight = 40;
+  const paymentInfoHeight = 20;
   const availableHeight =
     pageHeight -
     margin * 2 -
@@ -159,15 +159,18 @@ export const generateOrderPDF = (orderDetails) => {
     paymentInfoHeight;
 
   // Calculate how many items can fit on a page
-  const itemRowHeight = 8; // Height of each item row
+  const itemRowHeight = 5;
   const itemsPerPage = Math.floor(availableHeight / itemRowHeight);
+
+  // Ensure at least 10 items per page, but aim for 12-14
+  const targetItemsPerPage = Math.max(12, Math.min(14, itemsPerPage));
 
   // Calculate total number of pages needed
   const totalItems = orderDetails.items.reduce(
     (sum, item) => sum + item.quantity,
     0
   );
-  const totalPages = Math.ceil(orderDetails.items.length / itemsPerPage);
+  const totalPages = Math.ceil(orderDetails.items.length / targetItemsPerPage);
 
   // Function to add header to each page
   const addHeader = (pageNum) => {
@@ -191,55 +194,55 @@ export const generateOrderPDF = (orderDetails) => {
       "F"
     );
 
-    // Add header with logo and order number
-    let y = margin + 10;
+    // Add header with logo and order number - more compact
+    let y = margin + 5;
 
     // Add logo
     try {
-      const logoWidth = 40;
-      const logoHeight = 40;
-      doc.addImage("/logo.png", "PNG", margin + 10, y, logoWidth, logoHeight);
+      const logoWidth = 25;
+      const logoHeight = 25;
+      doc.addImage("/logo.png", "PNG", margin + 3, y, logoWidth, logoHeight);
     } catch (error) {
       console.error("Error adding logo:", error);
       // Fallback if logo can't be loaded
-      addText(doc, "EBRIKKHO", margin + 10, y + 15, {
-        fontSize: 24,
+      addText(doc, "EBRIKKHO", margin + 3, y + 12, {
+        fontSize: 18,
         textColor: colors.primary,
         fontStyle: "bold",
       });
     }
 
     // Add order number in the top right
-    addText(doc, "Order Number:", pageWidth - margin - 10 - 40, y + 10, {
-      fontSize: 12,
+    addText(doc, "Order #:", pageWidth - margin - 8 - 35, y + 8, {
+      fontSize: 9,
       textColor: colors.mediumGray,
     });
 
-    addText(doc, orderDetails.orderNumber, pageWidth - margin - 10, y + 10, {
-      fontSize: 14,
+    addText(doc, orderDetails.orderNumber, pageWidth - margin - 8, y + 8, {
+      fontSize: 11,
       textColor: colors.secondary,
       fontStyle: "bold",
       align: "right",
     });
 
     // Add invoice title
-    addText(doc, "INVOICE", pageWidth / 2, y + 25, {
-      fontSize: 20,
+    addText(doc, "INVOICE", pageWidth / 2, y + 15, {
+      fontSize: 16,
       textColor: colors.secondary,
       fontStyle: "bold",
       align: "center",
     });
 
     // Add date and status
-    y += 40;
+    y += 25;
 
     // Add a subtle divider line
-    addLine(doc, margin + 10, y, pageWidth - margin - 10, y, colors.lightGray);
-    y += 10;
+    addLine(doc, margin + 3, y, pageWidth - margin - 3, y, colors.lightGray);
+    y += 6;
 
     // Add date
-    addText(doc, "Date:", margin + 10, y, {
-      fontSize: 10,
+    addText(doc, "Date:", margin + 3, y, {
+      fontSize: 8,
       textColor: colors.mediumGray,
     });
 
@@ -252,8 +255,8 @@ export const generateOrderPDF = (orderDetails) => {
       }
     );
 
-    addText(doc, formattedDate, margin + 25, y, {
-      fontSize: 10,
+    addText(doc, formattedDate, margin + 12, y, {
+      fontSize: 8,
       textColor: colors.secondary,
       fontStyle: "bold",
     });
@@ -271,14 +274,14 @@ export const generateOrderPDF = (orderDetails) => {
 
     // Status badge background
     doc.setFillColor(statusColor.r, statusColor.g, statusColor.b);
-    const statusWidth = doc.getStringUnitWidth(statusText) * 10 * 1.2;
+    const statusWidth = doc.getStringUnitWidth(statusText) * 8 * 1.2;
     doc.roundedRect(
-      pageWidth - margin - 10 - statusWidth - 10,
-      y - 5,
-      statusWidth + 10,
-      10,
-      5,
-      5,
+      pageWidth - margin - 3 - statusWidth - 8,
+      y - 3,
+      statusWidth + 8,
+      6,
+      3,
+      3,
       "F"
     );
 
@@ -286,10 +289,10 @@ export const generateOrderPDF = (orderDetails) => {
     addText(
       doc,
       statusText,
-      pageWidth - margin - 10 - statusWidth / 2 - 5,
-      y + 3,
+      pageWidth - margin - 3 - statusWidth / 2 - 4,
+      y + 1,
       {
-        fontSize: 10,
+        fontSize: 8,
         textColor: colors.white,
         align: "center",
       }
@@ -298,15 +301,15 @@ export const generateOrderPDF = (orderDetails) => {
     // Add page number if multiple pages
     if (totalPages > 1) {
       addText(doc, `Page ${pageNum} of ${totalPages}`, pageWidth / 2, y, {
-        fontSize: 10,
+        fontSize: 8,
         textColor: colors.mediumGray,
         align: "center",
       });
     }
 
-    y += 20;
+    y += 10;
 
-    // Add customer information section
+    // Add customer information section - more compact
     doc.setFillColor(
       colors.lightGray.r,
       colors.lightGray.g,
@@ -314,16 +317,16 @@ export const generateOrderPDF = (orderDetails) => {
     );
     addRoundedRect(
       doc,
-      margin + 10,
+      margin + 3,
       y,
-      contentWidth - 20,
-      40,
+      contentWidth - 6,
+      25,
       3,
       colors.lightGray
     );
 
-    addText(doc, "Bill To:", margin + 15, y + 10, {
-      fontSize: 12,
+    addText(doc, "Bill To:", margin + 8, y + 6, {
+      fontSize: 9,
       textColor: colors.secondary,
       fontStyle: "bold",
     });
@@ -331,31 +334,31 @@ export const generateOrderPDF = (orderDetails) => {
     addText(
       doc,
       orderDetails.customer?.name || "Customer Name",
-      margin + 15,
-      y + 20,
+      margin + 8,
+      y + 12,
       {
-        fontSize: 10,
+        fontSize: 8,
         textColor: colors.darkGray,
       }
     );
 
     if (orderDetails.customer?.email) {
-      addText(doc, orderDetails.customer.email, margin + 15, y + 27, {
-        fontSize: 10,
+      addText(doc, orderDetails.customer.email, margin + 8, y + 17, {
+        fontSize: 8,
         textColor: colors.darkGray,
       });
     }
 
     if (orderDetails.customer?.phone) {
-      addText(doc, orderDetails.customer.phone, margin + 15, y + 34, {
-        fontSize: 10,
+      addText(doc, orderDetails.customer.phone, margin + 8, y + 22, {
+        fontSize: 8,
         textColor: colors.darkGray,
       });
     }
 
-    // Add shipping information
-    addText(doc, "Ship To:", pageWidth / 2 + 10, y + 10, {
-      fontSize: 12,
+    // Add shipping information - more compact
+    addText(doc, "Ship To:", pageWidth / 2 + 3, y + 6, {
+      fontSize: 9,
       textColor: colors.secondary,
       fontStyle: "bold",
     });
@@ -364,57 +367,57 @@ export const generateOrderPDF = (orderDetails) => {
     const address = orderDetails.customer?.address || "Customer Address";
     const addressLines = address.split(",");
 
-    let addressY = y + 20;
+    let addressY = y + 12;
     addressLines.forEach((line, index) => {
       if (index < 3) {
         // Limit to 3 lines to avoid overflow
-        addText(doc, line.trim(), pageWidth / 2 + 10, addressY, {
-          fontSize: 10,
+        addText(doc, line.trim(), pageWidth / 2 + 3, addressY, {
+          fontSize: 8,
           textColor: colors.darkGray,
         });
-        addressY += 7;
+        addressY += 5;
       }
     });
 
-    return y + 50; // Return the y position after the header
+    return y + 30;
   };
 
   // Function to add footer to each page
   const addFooter = (y) => {
     // Add a subtle divider line
-    addLine(doc, margin + 10, y, pageWidth - margin - 10, y, colors.lightGray);
-    y += 10;
+    addLine(doc, margin + 3, y, pageWidth - margin - 3, y, colors.lightGray);
+    y += 6;
 
     // Add thank you message
     addText(doc, "Thank you for shopping with Ebrikkho!", pageWidth / 2, y, {
-      fontSize: 10,
+      fontSize: 8,
       textColor: colors.mediumGray,
       fontStyle: "italic",
       align: "center",
     });
 
     // Add contact information
-    y += 7;
+    y += 5;
     addText(
       doc,
       "For any queries, please contact our customer support:",
       pageWidth / 2,
       y,
       {
-        fontSize: 8,
+        fontSize: 6,
         textColor: colors.mediumGray,
         align: "center",
       }
     );
 
-    y += 5;
+    y += 3;
     addText(
       doc,
       "Email: ebrikkho2024@gmail.com | Phone: 01518926700, 01773995858",
       pageWidth / 2,
       y,
       {
-        fontSize: 8,
+        fontSize: 6,
         textColor: colors.mediumGray,
         align: "center",
       }
@@ -427,47 +430,39 @@ export const generateOrderPDF = (orderDetails) => {
 
     // Add items table header
     doc.setFillColor(colors.primary.r, colors.primary.g, colors.primary.b);
-    addRoundedRect(
-      doc,
-      margin + 10,
-      y,
-      contentWidth - 20,
-      8,
-      3,
-      colors.primary
-    );
+    addRoundedRect(doc, margin + 3, y, contentWidth - 6, 5, 3, colors.primary);
 
-    // Table headers with proper spacing
-    const col1 = margin + 15;
-    const col2 = col1 + 70;
-    const col3 = col2 + 25;
-    const col4 = col3 + 25;
+    // Table headers with proper spacing - optimized for more items
+    const col1 = margin + 6;
+    const col2 = col1 + 60;
+    const col3 = col2 + 18;
+    const col4 = col3 + 18;
 
-    addText(doc, "Item", col1, y + 5, {
-      fontSize: 9,
+    addText(doc, "Item", col1, y + 3, {
+      fontSize: 7,
       textColor: colors.white,
       fontStyle: "bold",
     });
 
-    addText(doc, "Qty", col2, y + 5, {
-      fontSize: 9,
+    addText(doc, "Qty", col2, y + 3, {
+      fontSize: 7,
       textColor: colors.white,
       fontStyle: "bold",
     });
 
-    addText(doc, "Price", col3, y + 5, {
-      fontSize: 9,
+    addText(doc, "Price", col3, y + 3, {
+      fontSize: 7,
       textColor: colors.white,
       fontStyle: "bold",
     });
 
-    addText(doc, "Total", col4, y + 5, {
-      fontSize: 9,
+    addText(doc, "Total", col4, y + 3, {
+      fontSize: 7,
       textColor: colors.white,
       fontStyle: "bold",
     });
 
-    y += 10;
+    y += 7;
 
     // Table rows
     for (
@@ -486,10 +481,10 @@ export const generateOrderPDF = (orderDetails) => {
         );
         addRoundedRect(
           doc,
-          margin + 10,
+          margin + 3,
           y,
-          contentWidth - 20,
-          8,
+          contentWidth - 6,
+          5,
           0,
           colors.lightGray
         );
@@ -497,42 +492,42 @@ export const generateOrderPDF = (orderDetails) => {
 
       // Item name (with ellipsis if too long)
       const itemName =
-        item.name.length > 25 ? item.name.substring(0, 22) + "..." : item.name;
-      addText(doc, itemName, col1, y + 5, {
-        fontSize: 9,
+        item.name.length > 20 ? item.name.substring(0, 17) + "..." : item.name;
+      addText(doc, itemName, col1, y + 3, {
+        fontSize: 7,
         textColor: colors.secondary,
       });
 
       // Quantity
-      addText(doc, item.quantity.toString(), col2, y + 5, {
-        fontSize: 9,
+      addText(doc, item.quantity.toString(), col2, y + 3, {
+        fontSize: 7,
         textColor: colors.secondary,
       });
 
       // Price
-      addPrice(doc, item.price, col3, y + 5, {
-        fontSize: 8,
+      addPrice(doc, item.price, col3, y + 3, {
+        fontSize: 6,
         textColor: colors.secondary,
       });
 
       // Total
       const itemTotal = item.price * item.quantity;
-      addPrice(doc, itemTotal, col4, y + 5, {
-        fontSize: 8,
+      addPrice(doc, itemTotal, col4, y + 3, {
+        fontSize: 6,
         textColor: colors.secondary,
         align: "right",
       });
 
-      y += 8;
+      y += 5;
     }
 
     return y;
   };
 
-  // Function to add summary section
+  // Function to add summary section - more compact
   const addSummary = (y) => {
-    const summaryWidth = 80;
-    const summaryX = pageWidth - margin - 10 - summaryWidth;
+    const summaryWidth = 60;
+    const summaryX = pageWidth - margin - 3 - summaryWidth;
 
     // Summary background
     doc.setFillColor(
@@ -540,30 +535,30 @@ export const generateOrderPDF = (orderDetails) => {
       colors.lightGray.g,
       colors.lightGray.b
     );
-    addRoundedRect(doc, summaryX, y, summaryWidth, 60, 3, colors.lightGray);
+    addRoundedRect(doc, summaryX, y, summaryWidth, 35, 3, colors.lightGray);
 
     // Summary title
-    addText(doc, "Order Summary", summaryX + summaryWidth / 2, y + 10, {
-      fontSize: 12,
+    addText(doc, "Order Summary", summaryX + summaryWidth / 2, y + 6, {
+      fontSize: 9,
       textColor: colors.secondary,
       fontStyle: "bold",
       align: "center",
     });
 
-    // Summary details
+    // Summary details - more compact
     // Items count
-    addText(doc, `Items (${totalItems}):`, summaryX + 5, y + 25, {
-      fontSize: 10,
+    addText(doc, `Items (${totalItems}):`, summaryX + 3, y + 14, {
+      fontSize: 8,
       textColor: colors.darkGray,
     });
 
     addPrice(
       doc,
       orderDetails.subtotal || orderDetails.total,
-      summaryX + summaryWidth - 5,
-      y + 25,
+      summaryX + summaryWidth - 3,
+      y + 14,
       {
-        fontSize: 9,
+        fontSize: 7,
         textColor: colors.secondary,
         fontStyle: "bold",
         align: "right",
@@ -571,18 +566,18 @@ export const generateOrderPDF = (orderDetails) => {
     );
 
     // Shipping
-    addText(doc, "Shipping:", summaryX + 5, y + 35, {
-      fontSize: 10,
+    addText(doc, "Shipping:", summaryX + 3, y + 20, {
+      fontSize: 8,
       textColor: colors.darkGray,
     });
 
     addPrice(
       doc,
       orderDetails.shipping || 0,
-      summaryX + summaryWidth - 5,
-      y + 35,
+      summaryX + summaryWidth - 3,
+      y + 20,
       {
-        fontSize: 9,
+        fontSize: 7,
         textColor: colors.secondary,
         fontStyle: "bold",
         align: "right",
@@ -590,23 +585,23 @@ export const generateOrderPDF = (orderDetails) => {
     );
 
     // Total
-    addText(doc, "Total:", summaryX + 5, y + 50, {
-      fontSize: 11,
+    addText(doc, "Total:", summaryX + 3, y + 30, {
+      fontSize: 9,
       textColor: colors.secondary,
       fontStyle: "bold",
     });
 
-    addPrice(doc, orderDetails.total, summaryX + summaryWidth - 5, y + 50, {
-      fontSize: 10,
+    addPrice(doc, orderDetails.total, summaryX + summaryWidth - 3, y + 30, {
+      fontSize: 8,
       textColor: colors.secondary,
       fontStyle: "bold",
       align: "right",
     });
 
-    return y + 70;
+    return y + 40;
   };
 
-  // Function to add payment information
+  // Function to add payment information - more compact
   const addPaymentInfo = (y) => {
     doc.setFillColor(
       colors.lightGray.r,
@@ -615,16 +610,16 @@ export const generateOrderPDF = (orderDetails) => {
     );
     addRoundedRect(
       doc,
-      margin + 10,
+      margin + 3,
       y,
-      contentWidth - 20,
-      30,
+      contentWidth - 6,
+      20,
       3,
       colors.lightGray
     );
 
-    addText(doc, "Payment Information", margin + 15, y + 10, {
-      fontSize: 12,
+    addText(doc, "Payment Information", margin + 8, y + 6, {
+      fontSize: 9,
       textColor: colors.secondary,
       fontStyle: "bold",
     });
@@ -632,10 +627,10 @@ export const generateOrderPDF = (orderDetails) => {
     addText(
       doc,
       `Method: ${orderDetails.payment?.method || "Credit Card"}`,
-      margin + 15,
-      y + 20,
+      margin + 8,
+      y + 12,
       {
-        fontSize: 10,
+        fontSize: 8,
         textColor: colors.darkGray,
       }
     );
@@ -644,16 +639,16 @@ export const generateOrderPDF = (orderDetails) => {
       addText(
         doc,
         `Transaction ID: ${orderDetails.payment.transactionId}`,
-        margin + 15,
-        y + 27,
+        margin + 8,
+        y + 17,
         {
-          fontSize: 10,
+          fontSize: 8,
           textColor: colors.darkGray,
         }
       );
     }
 
-    return y + 40;
+    return y + 25;
   };
 
   // Generate all pages
@@ -667,9 +662,9 @@ export const generateOrderPDF = (orderDetails) => {
     let y = addHeader(pageNum + 1);
 
     // Calculate start and end item indices for this page
-    const startItemIndex = pageNum * itemsPerPage;
+    const startItemIndex = pageNum * targetItemsPerPage;
     const endItemIndex = Math.min(
-      (pageNum + 1) * itemsPerPage,
+      (pageNum + 1) * targetItemsPerPage,
       orderDetails.items.length
     );
 
@@ -684,16 +679,16 @@ export const generateOrderPDF = (orderDetails) => {
       y = addPaymentInfo(y);
 
       // Add footer
-      addFooter(pageHeight - margin - 30);
+      addFooter(pageHeight - margin - 20);
     } else {
       // Add "Continued on next page" text
       addText(
         doc,
         "Continued on next page...",
         pageWidth / 2,
-        pageHeight - margin - 30,
+        pageHeight - margin - 20,
         {
-          fontSize: 10,
+          fontSize: 8,
           textColor: colors.mediumGray,
           align: "center",
         }
@@ -701,7 +696,7 @@ export const generateOrderPDF = (orderDetails) => {
     }
 
     // Add watermark
-    doc.setFontSize(60);
+    doc.setFontSize(45);
     doc.setTextColor(240, 240, 240);
     doc.setFont(undefined, "bold");
     doc.text("EBRIKKHO", pageWidth / 2, pageHeight / 2, {

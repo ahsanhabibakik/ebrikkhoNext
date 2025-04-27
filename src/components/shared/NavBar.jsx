@@ -1,15 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Menu,
-  ShoppingCart,
-  User,
-  Search,
-  ChevronDown,
-  X,
-  Leaf,
-} from "lucide-react";
+import { Menu, User, Search, ChevronDown, X, Leaf } from "lucide-react";
+import { PiBasketThin } from "react-icons/pi";
 import Link from "next/link";
 import Image from "next/image";
 import SearchModal from "./SearchModal";
@@ -274,7 +267,7 @@ export default function NavBar() {
             className="btn btn-ghost btn-circle relative"
             onClick={() => dispatch(toggleCart())}
           >
-            <ShoppingCart size={20} />
+            <PiBasketThin size={20} />
             <span className="badge badge-sm badge-primary absolute -top-1 -right-1">
               {mounted ? getCartCount() : 0}
             </span>
