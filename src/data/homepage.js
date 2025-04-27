@@ -130,54 +130,6 @@ export const features = [
   },
 ];
 
-export const stats = [
-  {
-    number: "5000+",
-    label: "Happy Customers",
-    icon: <Users className="w-8 h-8" />,
-  },
-  {
-    number: "100+",
-    label: "Plant Varieties",
-    icon: <Leaf className="w-8 h-8" />,
-  },
-  {
-    number: "50+",
-    label: "Expert Staff",
-    icon: <User className="w-8 h-8" />,
-  },
-  {
-    number: "10+",
-    label: "Years Experience",
-    icon: <Award className="w-8 h-8" />,
-  },
-];
-
-export const plantCareTips = [
-  {
-    title: "Watering Guide",
-    description:
-      "Learn the right way to water your plants based on their type and season",
-    icon: <Droplet className="w-6 h-6" />,
-  },
-  {
-    title: "Light Requirements",
-    description: "Understand how much light your plants need to thrive",
-    icon: <Sun className="w-6 h-6" />,
-  },
-  {
-    title: "Soil & Fertilizer",
-    description:
-      "Choose the right soil and fertilizer for healthy plant growth",
-    icon: <Flower className="w-6 h-6" />,
-  },
-  {
-    title: "Pest Control",
-    description: "Natural ways to keep your plants pest-free",
-    icon: <Bug className="w-6 h-6" />,
-  },
-];
-
 export const contactInfo = {
   address: "123 Green Street, Plant City",
   phone: "+1 234 567 890",
