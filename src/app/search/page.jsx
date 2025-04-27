@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { products, categories } from "@/data/products";
 import { Filter, Star } from "lucide-react";
@@ -8,6 +8,14 @@ import ProductCard from "@/components/shared/ProductCard";
 import SearchBar from "@/components/shared/SearchBar";
 
 export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchContent />
+    </Suspense>
+  );
+}
+
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
   const categoryParam = searchParams.get("category");
