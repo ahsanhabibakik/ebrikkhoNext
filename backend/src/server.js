@@ -17,6 +17,7 @@ app.use(morgan("dev"));
 
 // Import routes
 const cartRoutes = require("./routes/cart");
+const orderRoutes = require("./routes/orders");
 
 // Routes
 app.get("/", (req, res) => {
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 
 // Mount routes
 app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Connect to MongoDB
 const connectDB = async () => {
