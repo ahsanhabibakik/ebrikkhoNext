@@ -109,7 +109,7 @@ export default function CartSidebar() {
         />
       )}
 
-      {/* Sidebar with improved design */}
+      {/* Sidebar */}
       <div
         className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-xl transform transition-all duration-300 ease-in-out z-[999] ${
           isCartOpen ? "translate-x-0" : "translate-x-full"

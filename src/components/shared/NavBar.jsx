@@ -43,13 +43,19 @@ export default function NavBar() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [closeTimeout, setCloseTimeout] = useState(null);
+  const [mounted, setMounted] = useState(false);
 
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
   const isCartOpen = useAppSelector((state) => state.cart.isCartOpen);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const getCartCount = () => {
-    return cartItems.reduce((total, item) => total + item.quantity, 0);
+    if (!mounted || !cartItems) return 0;
+    return cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
   };
 
   // Handle opening the categories dropdown
@@ -270,7 +276,7 @@ export default function NavBar() {
           >
             <ShoppingCart size={20} />
             <span className="badge badge-sm badge-primary absolute -top-1 -right-1">
-              {getCartCount()}
+              {mounted ? getCartCount() : 0}
             </span>
           </button>
         </div>

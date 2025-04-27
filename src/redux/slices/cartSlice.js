@@ -2,6 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Load initial state from localStorage
 const loadState = () => {
+  if (typeof window === "undefined") {
+    return {
+      items: [],
+      savedForLater: [],
+      total: 0,
+      shippingCost: 0,
+      discount: 0,
+      couponCode: "",
+      isCartOpen: false,
+    };
+  }
+
   try {
     const serializedState = localStorage.getItem("cart");
     if (serializedState === null) {
