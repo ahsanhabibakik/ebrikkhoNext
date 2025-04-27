@@ -153,71 +153,92 @@ export default function NavBar() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-2 relative z-10">
-        {/* Left: Logo & menu */}
-        <div className="flex items-center gap-2">
-          <button
-            className="btn btn-ghost btn-circle lg:hidden text-white hover:bg-orange-700/20 active:bg-orange-700/30"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex flex-col md:flex-row items-center justify-between gap-2 relative z-10">
+        {/* Top row for mobile: Logo and icons */}
+        <div className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2 relative">
+          {/* Left: Logo & menu */}
+          <div className="flex items-center gap-2">
+            <button
+              className="btn btn-ghost btn-circle hidden sm:block md:hidden text-white hover:bg-orange-700/20 active:bg-orange-700/30"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
 
-          <Link href="/" className="flex items-center">
-            <Image src="/logo.png" alt="Ebrikkho Logo" width={80} height={80} />
-          </Link>
+          {/* Center: Logo - absolute on mobile, static on md+ */}
+          <div className="block md:hidden absolute left-1/2 transform -translate-x-1/2">
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/logo.png"
+                alt="Ebrikkho Logo"
+                width={80}
+                height={80}
+              />
+            </Link>
+          </div>
+          <div className="hidden md:flex items-center">
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/logo.png"
+                alt="Ebrikkho Logo"
+                width={80}
+                height={80}
+              />
+            </Link>
+          </div>
+
+          {/* Right: Icons for mobile */}
+          <div className="flex md:hidden items-center gap-2">
+            <Link
+              href="/account"
+              className="btn btn-ghost btn-circle text-white hover:bg-orange-700/20 active:bg-orange-700/30"
+            >
+              <VscAccount size={20} />
+            </Link>
+            <button
+              onClick={() => dispatch(toggleCart())}
+              className="btn btn-ghost btn-circle text-white hover:bg-orange-700/20 active:bg-orange-700/30 relative"
+            >
+              <PiBasketThin size={20} />
+              {getCartCount() > 0 && (
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                  {getCartCount()}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
 
-        {/* Center: Search */}
-        <div className="hidden lg:flex flex-1 max-w-xl mx-4">
-          <form onSubmit={handleSearch} className="w-full">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder={placeholder}
-                className="w-full px-4 py-2 pl-10 pr-4 rounded-lg bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-orange-300"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
-              />
-              <BsSearch
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-white/70"
-                size={18}
-              />
-            </div>
-          </form>
-        </div>
-
-        {/* Right: Navigation Links */}
-        <div className="hidden lg:flex items-center gap-6 text-sm font-medium">
+        {/* Desktop Navigation - Now on the same line */}
+        <div className="hidden md:flex items-center space-x-3 text-white">
           <Link
             href="/plants"
-            className="hover:text-orange-200 transition-colors"
+            className="hover:text-orange-300 transition-colors text-sm"
           >
             Plants
           </Link>
-          <div className="relative">
+          <div className="relative group">
             <button
-              id="categories-button"
+              className="flex items-center hover:text-orange-300 transition-colors text-sm"
               onMouseEnter={handleOpenCategories}
               onMouseLeave={handleCloseCategories}
-              className="flex items-center gap-1 hover:text-orange-200 transition-colors"
             >
-              Categories <ChevronDown size={14} />
+              Categories
+              <ChevronDown size={14} className="ml-1" />
             </button>
             {isCategoriesOpen && (
               <div
                 id="categories-dropdown"
+                className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg py-2 z-50"
                 onMouseEnter={handleOpenCategories}
                 onMouseLeave={handleCloseCategories}
-                className="absolute top-full left-0 mt-2 w-64 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-[100]"
               >
                 {categories.map((category) => (
                   <Link
                     key={category.name}
                     href={category.href}
-                    className="block px-4 py-3 hover:bg-orange-50 text-base font-medium text-gray-800"
+                    className="block px-4 py-2 text-gray-800 hover:bg-orange-100 hover:text-orange-800"
                   >
                     {category.name}
                   </Link>
@@ -227,35 +248,48 @@ export default function NavBar() {
           </div>
           <Link
             href="/services"
-            className="hover:text-orange-200 transition-colors"
+            className="hover:text-orange-300 transition-colors text-sm"
           >
             Services
           </Link>
           <Link
             href="/community/blog"
-            className="hover:text-orange-200 transition-colors"
+            className="hover:text-orange-300 transition-colors text-sm"
           >
             Blog
           </Link>
           <Link
             href="/community/forum"
-            className="hover:text-orange-200 transition-colors"
-            onClick={() => setIsMenuOpen(false)}
+            className="hover:text-orange-300 transition-colors text-sm"
           >
             Forum
           </Link>
         </div>
 
-        {/* Right: Icons */}
-        <div className="flex items-center gap-4">
-          {/* Mobile Search Icon */}
-          <button
-            className="btn btn-ghost btn-circle lg:hidden text-white hover:bg-orange-700/20 active:bg-orange-700/30"
-            onClick={() => setIsSearchOpen(true)}
-          >
-            <BsSearch size={20} />
-          </button>
+        {/* Center: Search - Full width on mobile, normal on desktop */}
+        <div className="w-full md:flex-1 md:max-w-xl md:mx-2 mt-2 md:mt-0">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder={placeholder}
+              className="w-full px-4 py-2 pl-10 pr-4 rounded-lg bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-orange-300 text-sm md:text-base cursor-pointer"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsSearchOpen(true)}
+              onClick={() => setIsSearchOpen(true)}
+            />
+            <button
+              type="button"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+              onClick={() => setIsSearchOpen(true)}
+            >
+              <BsSearch size={18} />
+            </button>
+          </div>
+        </div>
 
+        {/* Right: Icons for desktop */}
+        <div className="hidden md:flex items-center gap-2">
           <Link
             href="/account"
             className="btn btn-ghost btn-circle text-white hover:bg-orange-700/20 active:bg-orange-700/30"
