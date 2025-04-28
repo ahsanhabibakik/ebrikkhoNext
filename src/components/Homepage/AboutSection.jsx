@@ -70,7 +70,15 @@ const AboutSection = () => {
               About Ebrikkho
             </h2>
             <p className="text-sm md:text-base text-gray-600">
-              Ebrikkho is a modern online destination for all things green and sustainable. We offer a wide range of indoor and outdoor plants, rooftop gardening essentials, seeds, eco-friendly gardening tools, organic fertilizers, and sustainable home decor. Our mission is to inspire greener lifestyles by making plants and nature-based living easy and accessible. Whether you're building a rooftop garden, refreshing your home with vibrant greenery, or looking for thoughtful eco-conscious gifts, Ebrikkho brings nature closer to your everyday life.
+              Ebrikkho is a modern online destination for all things green and
+              sustainable. We offer a wide range of indoor and outdoor plants,
+              rooftop gardening essentials, seeds, eco-friendly gardening tools,
+              organic fertilizers, and sustainable home decor. Our mission is to
+              inspire greener lifestyles by making plants and nature-based
+              living easy and accessible. Whether you're building a rooftop
+              garden, refreshing your home with vibrant greenery, or looking for
+              thoughtful eco-conscious gifts, Ebrikkho brings nature closer to
+              your everyday life.
             </p>
             <div className="space-y-3">
               {highlights.map((highlight) => (
