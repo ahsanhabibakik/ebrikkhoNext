@@ -11,6 +11,8 @@ import {
   Facebook,
   Twitter,
   Send,
+  Linkedin,
+  Youtube,
 } from "lucide-react";
 
 export default function Footer() {
@@ -127,6 +129,24 @@ export default function Footer() {
                 className="text-orange-100 hover:text-white transition-colors cursor-pointer focus:outline-none"
               >
                 <Twitter size={20} />
+              </a>
+              <a
+                href="https://linkedin.com/in/ebrikkho"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="text-orange-100 hover:text-white transition-colors cursor-pointer focus:outline-none"
+              >
+                <Linkedin size={20} />
+              </a>
+              <a
+                href="https://youtube.com/ebrikkho"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="text-orange-100 hover:text-white transition-colors cursor-pointer focus:outline-none"
+              >
+                <Youtube size={20} />
               </a>
             </div>
           </div>

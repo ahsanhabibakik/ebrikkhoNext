@@ -73,9 +73,7 @@ export default function HeroSection() {
 
   const handleTouchEnd = (e) => {
     if (!isDragging || startX === null) return;
-    const endX = e.changedTouches
-      ? e.changedTouches[0].clientX
-      : e.clientX;
+    const endX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
     const diff = endX - startX;
     if (diff > 50) {
       prevSlide();
