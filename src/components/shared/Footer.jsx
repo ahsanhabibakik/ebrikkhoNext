@@ -102,20 +102,29 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
-                className="text-orange-100 hover:text-white transition-colors"
+                href="https://instagram.com/ebrikkho"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="text-orange-100 hover:text-white transition-colors cursor-pointer focus:outline-none"
               >
                 <Instagram size={20} />
               </a>
               <a
-                href="#"
-                className="text-orange-100 hover:text-white transition-colors"
+                href="https://facebook.com/ebrikkho"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="text-orange-100 hover:text-white transition-colors cursor-pointer focus:outline-none"
               >
                 <Facebook size={20} />
               </a>
               <a
-                href="#"
-                className="text-orange-100 hover:text-white transition-colors"
+                href="https://twitter.com/ebrikkho"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Twitter"
+                className="text-orange-100 hover:text-white transition-colors cursor-pointer focus:outline-none"
               >
                 <Twitter size={20} />
               </a>
