@@ -54,10 +54,13 @@ const AboutSection = () => {
             className="relative h-[250px] md:h-[300px] lg:h-[400px] rounded-lg overflow-hidden shadow-lg"
           >
             <Image
-              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
               alt="Ebrikkho Garden Center - Your destination for indoor and outdoor plants"
               fill
               className="object-cover"
+              onError={(e) => {
+                e.target.src = "https://via.placeholder.com/800x400?text=Ebrikkho+Image";
+              }}
             />
           </motion.div>
           <motion.div
@@ -70,15 +73,7 @@ const AboutSection = () => {
               About Ebrikkho
             </h2>
             <p className="text-sm md:text-base text-gray-600">
-              Ebrikkho is a modern online destination for all things green and
-              sustainable. We offer a wide range of indoor and outdoor plants,
-              rooftop gardening essentials, seeds, eco-friendly gardening tools,
-              organic fertilizers, and sustainable home decor. Our mission is to
-              inspire greener lifestyles by making plants and nature-based
-              living easy and accessible. Whether you're building a rooftop
-              garden, refreshing your home with vibrant greenery, or looking for
-              thoughtful eco-conscious gifts, Ebrikkho brings nature closer to
-              your everyday life.
+              Ebrikkho is a modern online destination for all things green and sustainable. We offer a wide range of indoor and outdoor plants, rooftop gardening essentials, seeds, eco-friendly gardening tools, organic fertilizers, and sustainable home decor. Our mission is to inspire greener lifestyles by making plants and nature-based living easy and accessible. Whether you're building a rooftop garden, refreshing your home with vibrant greenery, or looking for thoughtful eco-conscious gifts, Ebrikkho brings nature closer to your everyday life.
             </p>
             <div className="space-y-3">
               {highlights.map((highlight) => (
