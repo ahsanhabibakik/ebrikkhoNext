@@ -54,7 +54,7 @@ const AboutSection = () => {
             className="relative h-[250px] md:h-[300px] lg:h-[400px] rounded-lg overflow-hidden shadow-lg"
           >
             <Image
-              src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
               alt="Ebrikkho Garden Center - Your destination for indoor and outdoor plants"
               fill
               className="object-cover"
