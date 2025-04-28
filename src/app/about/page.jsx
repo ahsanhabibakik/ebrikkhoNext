@@ -435,10 +435,10 @@ export default function AboutPage() {
                   "Abid specializes in creating beautiful outdoor spaces that reflect your personal style.",
               },
               {
-                name: "Nusrat Jahan",
+                name: "Talib Hossain",
                 role: "Customer Care",
                 description:
-                  "Nusrat ensures every customer receives personalized attention and expert advice.",
+                  "Talib ensures every customer receives personalized attention and expert advice.",
               },
             ].map((member, index) => (
               <div
