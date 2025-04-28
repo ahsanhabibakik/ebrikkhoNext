@@ -5,13 +5,6 @@ import { Menu, ChevronDown, X, Leaf } from "lucide-react";
 import { PiBasketThin } from "react-icons/pi";
 import { VscAccount } from "react-icons/vsc";
 import { BsSearch } from "react-icons/bs";
-import {
-  FaFacebook,
-  FaTwitter,
-  FaInstagram,
-  FaYoutube,
-  FaLinkedin,
-} from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 import SearchModal from "./SearchModal";
@@ -389,55 +382,6 @@ export default function NavBar() {
           initialQuery={searchQuery}
         />
       )}
-
-      {/* Social Media Links */}
-      <div className="flex justify-center items-center gap-4 py-3 bg-orange-900/80">
-        <a
-          href="https://facebook.com/ebrikkho"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Facebook"
-          className="text-white hover:text-orange-300 transition-colors"
-        >
-          <FaFacebook size={22} />
-        </a>
-        <a
-          href="https://twitter.com/ebrikkho"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Twitter"
-          className="text-white hover:text-orange-300 transition-colors"
-        >
-          <FaTwitter size={22} />
-        </a>
-        <a
-          href="https://instagram.com/ebrikkho"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Instagram"
-          className="text-white hover:text-orange-300 transition-colors"
-        >
-          <FaInstagram size={22} />
-        </a>
-        <a
-          href="https://youtube.com/ebrikkho"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="YouTube"
-          className="text-white hover:text-orange-300 transition-colors"
-        >
-          <FaYoutube size={22} />
-        </a>
-        <a
-          href="https://linkedin.com/in/ebrikkho"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="LinkedIn"
-          className="text-white hover:text-orange-300 transition-colors"
-        >
-          <FaLinkedin size={22} />
-        </a>
-      </div>
     </nav>
   );
 }
