@@ -58,6 +58,9 @@ const AboutSection = () => {
               alt="Ebrikkho Garden Center - Your destination for indoor and outdoor plants"
               fill
               className="object-cover"
+              onError={(e) => {
+                e.target.src = "https://via.placeholder.com/800x400?text=Ebrikkho+Image";
+              }}
             />
           </motion.div>
           <motion.div
