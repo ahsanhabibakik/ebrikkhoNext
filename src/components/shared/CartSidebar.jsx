@@ -8,25 +8,18 @@ import {
   Plus,
   ShoppingBag,
   Trash2,
-  Tag,
-  Truck,
-  Info,
-  Heart,
   Clock,
   ArrowRight,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
+  fetchCart,
+  addToCart,
+  updateCartItem,
   removeFromCart,
-  updateQuantity,
   clearCart,
   toggleCart,
-  applyCoupon as applyCouponAction,
-  setShippingCost as setShippingCostAction,
-  saveForLater,
-  moveToCart,
-  removeFromSaved,
 } from "@/redux/slices/cartSlice";
 import { products } from "@/data/products";
 import { useRouter } from "next/navigation";
@@ -34,18 +27,16 @@ import { useRouter } from "next/navigation";
 export default function CartSidebar() {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
-  const savedForLater = useAppSelector((state) => state.cart.savedForLater);
   const isCartOpen = useAppSelector((state) => state.cart.isCartOpen);
   const cartTotal = useAppSelector((state) => state.cart.total);
-  const shippingCost = useAppSelector((state) => state.cart.shippingCost);
-  const discount = useAppSelector((state) => state.cart.discount);
-  const couponCode = useAppSelector((state) => state.cart.couponCode);
 
-  const [inputCouponCode, setInputCouponCode] = useState("");
-  const [freeShippingThreshold] = useState(5000); // Free shipping above 5000 BDT
   const [showAddedToCart, setShowAddedToCart] = useState({});
 
   const router = useRouter();
+
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, [dispatch]);
 
   // Get related products based on cart items
   const getRelatedProducts = () => {
@@ -61,42 +52,16 @@ export default function CartSidebar() {
 
   const relatedProducts = getRelatedProducts();
 
-  useEffect(() => {
-    // Calculate shipping cost based on cart total
-    if (cartTotal >= freeShippingThreshold) {
-      dispatch(setShippingCostAction(0));
-    } else {
-      dispatch(setShippingCostAction(100)); // Standard shipping cost
-    }
-  }, [cartTotal, freeShippingThreshold, dispatch]);
-
-  const applyCoupon = () => {
-    // Simple coupon logic - you can enhance this
-    if (inputCouponCode.toLowerCase() === "welcome10") {
-      dispatch(
-        applyCouponAction({
-          code: inputCouponCode,
-          discount: cartTotal * 0.1, // 10% discount
-        })
-      );
-    }
+  const handleUpdateQuantity = (itemId, quantity) => {
+    dispatch(updateCartItem({ itemId, quantity }));
   };
 
-  const getFinalTotal = () => {
-    return cartTotal - discount + shippingCost;
+  const handleRemoveItem = (itemId) => {
+    dispatch(removeFromCart(itemId));
   };
 
-  const getAmountNeededForFreeShipping = () => {
-    const amountNeeded = freeShippingThreshold - cartTotal;
-    return amountNeeded > 0 ? amountNeeded : 0;
-  };
-
-  const handleSaveForLater = (itemId) => {
-    dispatch(saveForLater(itemId));
-    setShowAddedToCart({ ...showAddedToCart, [itemId]: true });
-    setTimeout(() => {
-      setShowAddedToCart({ ...showAddedToCart, [itemId]: false });
-    }, 2000);
+  const handleClearCart = () => {
+    dispatch(clearCart());
   };
 
   return (
@@ -129,7 +94,7 @@ export default function CartSidebar() {
 
           {/* Cart Items with improved styling */}
           <div className="flex-1 overflow-y-auto p-4">
-            {cartItems.length === 0 && savedForLater.length === 0 ? (
+            {cartItems.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center">
                 <ShoppingBag className="w-16 h-16 text-gray-400 mb-4" />
                 <p className="text-gray-600">Your cart is empty</p>
@@ -168,7 +133,7 @@ export default function CartSidebar() {
                               {item.name}
                             </h3>
                             <button
-                              onClick={() => dispatch(removeFromCart(item.id))}
+                              onClick={() => handleRemoveItem(item.id)}
                               className="text-gray-400 hover:text-red-500 transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -180,12 +145,7 @@ export default function CartSidebar() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() =>
-                                dispatch(
-                                  updateQuantity({
-                                    id: item.id,
-                                    quantity: item.quantity - 1,
-                                  })
-                                )
+                                handleUpdateQuantity(item.id, item.quantity - 1)
                               }
                               className="p-2 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 hover:text-gray-900 transition-colors"
                             >
@@ -196,72 +156,13 @@ export default function CartSidebar() {
                             </span>
                             <button
                               onClick={() =>
-                                dispatch(
-                                  updateQuantity({
-                                    id: item.id,
-                                    quantity: item.quantity + 1,
-                                  })
-                                )
+                                handleUpdateQuantity(item.id, item.quantity + 1)
                               }
                               className="p-2 hover:bg-gray-200 rounded-lg border border-gray-300 text-gray-700 hover:text-gray-900 transition-colors"
                             >
                               <Plus className="w-4 h-4" />
                             </button>
                           </div>
-                          <button
-                            onClick={() => handleSaveForLater(item.id)}
-                            className="mt-2 text-sm text-orange-600 hover:text-orange-700 flex items-center gap-1 transition-colors"
-                          >
-                            <Clock className="w-4 h-4" />
-                            Save for later
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Saved for Later Items */}
-                {savedForLater.length > 0 && (
-                  <div>
-                    <h3 className="font-medium text-gray-900 mb-4">
-                      Saved for Later
-                    </h3>
-                    {savedForLater.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex gap-4 p-4 bg-gray-50 rounded-lg relative group hover:shadow-md transition-all duration-300 mb-4"
-                      >
-                        <div className="relative w-20 h-20 flex-shrink-0">
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            fill
-                            className="object-cover rounded-lg"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex justify-between">
-                            <h3 className="font-medium text-gray-900">
-                              {item.name}
-                            </h3>
-                            <button
-                              onClick={() => dispatch(removeFromSaved(item.id))}
-                              className="text-gray-400 hover:text-red-500 transition-colors"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-2">
-                            ৳{item.price.toLocaleString()}
-                          </p>
-                          <button
-                            onClick={() => dispatch(moveToCart(item.id))}
-                            className="text-sm text-orange-600 hover:text-orange-700 flex items-center gap-1 transition-colors"
-                          >
-                            <ShoppingBag className="w-4 h-4" />
-                            Move to cart
-                          </button>
                         </div>
                       </div>
                     ))}
@@ -307,39 +208,6 @@ export default function CartSidebar() {
             )}
           </div>
 
-          {/* Coupon Section with improved design */}
-          {cartItems.length > 0 && (
-            <div className="border-t p-4 bg-gray-50">
-              <div className="flex items-center gap-2 mb-2">
-                <Tag className="w-5 h-5 text-orange-600" />
-                <h3 className="font-medium text-gray-900">Apply Coupon</h3>
-              </div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex-1">
-                  <input
-                    type="text"
-                    placeholder="Enter coupon code"
-                    value={inputCouponCode}
-                    onChange={(e) => setInputCouponCode(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-900"
-                  />
-                </div>
-                <button
-                  onClick={applyCoupon}
-                  className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
-                >
-                  Apply
-                </button>
-              </div>
-              {couponCode && (
-                <div className="mb-4 p-2 bg-green-50 text-green-700 rounded-lg flex items-center gap-2">
-                  <Tag className="w-4 h-4" />
-                  <span>Coupon applied: 10% off</span>
-                </div>
-              )}
-            </div>
-          )}
-
           {/* Footer with improved design */}
           {cartItems.length > 0 && (
             <div className="border-t p-4 bg-white">
@@ -350,32 +218,10 @@ export default function CartSidebar() {
                     ৳{cartTotal.toLocaleString()}
                   </span>
                 </div>
-                {discount > 0 && (
-                  <div className="flex justify-between text-sm text-green-600">
-                    <span>Discount</span>
-                    <span>-৳{discount.toLocaleString()}</span>
-                  </div>
-                )}
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Shipping</span>
-                  <span className="font-medium text-gray-900">
-                    {shippingCost === 0 ? (
-                      <span className="text-green-600">Free</span>
-                    ) : (
-                      `৳${shippingCost.toLocaleString()}`
-                    )}
-                  </span>
-                </div>
-                {getAmountNeededForFreeShipping() > 0 && (
-                  <div className="text-sm text-orange-600 bg-orange-50 p-2 rounded-lg">
-                    Add ৳{getAmountNeededForFreeShipping().toLocaleString()}{" "}
-                    more for free shipping
-                  </div>
-                )}
                 <div className="flex justify-between text-lg font-semibold pt-3 border-t">
                   <span className="text-gray-900">Total</span>
                   <span className="text-orange-600">
-                    ৳{getFinalTotal().toLocaleString()}
+                    ৳{cartTotal.toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -388,7 +234,7 @@ export default function CartSidebar() {
                   Proceed to Checkout
                 </Link>
                 <button
-                  onClick={() => dispatch(clearCart())}
+                  onClick={handleClearCart}
                   className="block w-full text-gray-600 hover:text-gray-800 font-medium"
                 >
                   Clear Cart
