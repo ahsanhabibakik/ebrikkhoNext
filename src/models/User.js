@@ -5,6 +5,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, unique: true, sparse: true },
   mobile: { type: String, unique: true, sparse: true },
   password: String,
+  isAdmin: { type: Boolean, default: false },
 }, { timestamps: true });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

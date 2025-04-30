@@ -38,6 +38,20 @@ export default async function handler(req, res) {
     return res.json({ data: { items: cart.items } });
   }
 
+  if (req.method === "PUT") {
+    const { productId, quantity } = req.body;
+    let cart = await Cart.findOne({ userId });
+    if (!cart) return res.status(404).json({ error: "Cart not found" });
+    const idx = cart.items.findIndex((i) => i.productId === productId);
+    if (idx > -1) {
+      cart.items[idx].quantity = quantity;
+      await cart.save();
+      return res.json({ data: { items: cart.items } });
+    } else {
+      return res.status(404).json({ error: "Product not found in cart" });
+    }
+  }
+
   if (req.method === "DELETE") {
     await Cart.findOneAndUpdate({ userId }, { items: [] });
     return res.json({ data: { items: [] } });
