@@ -69,6 +69,9 @@ export default function AuthForm({ mode = "login" }) {
 
       // Save JWT token to localStorage
       localStorage.setItem("token", data.token);
+      if (data.user && data.user.photo) {
+        localStorage.setItem("userPhoto", data.user.photo);
+      }
 
       // Optionally, fetch user profile with token and dispatch to Redux
       // const userRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/me`, {

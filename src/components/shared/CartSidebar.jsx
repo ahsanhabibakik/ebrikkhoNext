@@ -64,22 +64,12 @@ export default function CartSidebar() {
     dispatch(clearCart());
   };
 
-  return (
-    <>
-      {/* Overlay with blur effect */}
-      {isCartOpen && (
-        <div
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[998] transition-opacity duration-300"
-          onClick={() => dispatch(toggleCart())}
-        />
-      )}
+  if (!isCartOpen) return null;
 
-      {/* Sidebar */}
-      <div
-        className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-xl transform transition-all duration-300 ease-in-out z-[999] ${
-          isCartOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end">
+      {/* Sidebar content */}
+      <div className="w-80 bg-white shadow-lg h-full p-4 relative">
         <div className="h-full flex flex-col">
           {/* Header with gradient background */}
           <div className="p-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white flex justify-between items-center">
@@ -243,7 +233,18 @@ export default function CartSidebar() {
             </div>
           )}
         </div>
+        <button
+          onClick={() => dispatch(toggleCart())}
+          className="absolute top-2 right-2 text-orange-800"
+        >
+          Close
+        </button>
       </div>
-    </>
+      {/* Overlay */}
+      <div
+        className="fixed inset-0 bg-black bg-opacity-30"
+        onClick={() => dispatch(toggleCart())}
+      />
+    </div>
   );
 }

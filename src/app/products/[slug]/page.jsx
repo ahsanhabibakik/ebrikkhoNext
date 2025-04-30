@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { products } from "@/data/products";
@@ -32,7 +33,8 @@ import { useAppDispatch } from "@/redux/hooks";
 import { addToCart } from "@/redux/slices/cartSlice";
 import { toast } from "react-hot-toast";
 
-export default function ProductPage({ params }) {
+export default function ProductPage(paramsPromise) {
+  const params = React.use(paramsPromise);
   const { slug } = params;
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);

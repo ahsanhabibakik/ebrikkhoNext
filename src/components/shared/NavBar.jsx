@@ -11,6 +11,8 @@ import SearchModal from "./SearchModal";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toggleCart } from "@/redux/slices/cartSlice";
 import LeafPattern from "./LeafPattern";
+import { useSession, signOut } from "next-auth/react";
+import CartSidebar from "./CartSidebar";
 
 const placeholderTexts = [
   "Search indoor plants...",
@@ -43,6 +45,13 @@ export default function NavBar() {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
   const isCartOpen = useAppSelector((state) => state.cart.isCartOpen);
+
+  const { data: session } = useSession();
+  const isJwtLoggedIn = typeof window !== "undefined" && localStorage.getItem("token");
+  const userPhoto =
+    session?.user?.image ||
+    (typeof window !== "undefined" && localStorage.getItem("userPhoto")) ||
+    "/default-avatar.png"; // fallback
 
   useEffect(() => {
     setMounted(true);
@@ -290,12 +299,41 @@ export default function NavBar() {
 
         {/* Right: Icons for desktop */}
         <div className="hidden md:flex items-center gap-2">
-          <Link
-            href="/account"
-            className="btn btn-ghost btn-circle text-white hover:bg-orange-700/20 active:bg-orange-700/30"
-          >
-            <VscAccount size={20} />
-          </Link>
+          {(session || isJwtLoggedIn) ? (
+            <div className="relative group">
+              <button className="btn btn-ghost btn-circle flex items-center">
+                <Image
+                  src={userPhoto}
+                  alt="Profile"
+                  width={32}
+                  height={32}
+                  className="rounded-full"
+                />
+              </button>
+              <div className="absolute right-0 mt-2 w-40 bg-white text-orange-900 rounded shadow-lg opacity-0 group-hover:opacity-100 transition pointer-events-auto z-50">
+                <Link href="/account" className="block px-4 py-2 hover:bg-orange-100">Profile</Link>
+                <Link href="/orders" className="block px-4 py-2 hover:bg-orange-100">Orders</Link>
+                <button
+                  onClick={() => {
+                    if (session) signOut();
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("userPhoto");
+                    window.location.href = "/auth/login";
+                  }}
+                  className="block w-full text-left px-4 py-2 hover:bg-orange-100"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          ) : (
+            <Link
+              href="/auth/login"
+              className="btn btn-ghost btn-circle text-white hover:bg-orange-700/20 active:bg-orange-700/30"
+            >
+              <VscAccount size={20} />
+            </Link>
+          )}
           <button
             onClick={() => dispatch(toggleCart())}
             className="btn btn-ghost btn-circle text-white hover:bg-orange-700/20 active:bg-orange-700/30 relative"
@@ -382,6 +420,9 @@ export default function NavBar() {
           initialQuery={searchQuery}
         />
       )}
+
+      {/* Cart Sidebar */}
+      <CartSidebar />
     </nav>
   );
 }
