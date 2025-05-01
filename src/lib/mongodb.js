@@ -24,9 +24,11 @@ if (process.env.NODE_ENV === 'development') {
   clientPromise = client.connect();
 }
 
-export const dbConnect = async () => {
-  const client = await clientPromise;
+// Export the database connection function
+export async function dbConnect() {
+  await clientPromise;
   return client.db(process.env.MONGODB_DB);
-};
+}
 
+// Export the client promise as default
 export default clientPromise;

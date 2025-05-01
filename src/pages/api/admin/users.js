@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     if (!session.user?.isAdmin) return res.status(403).json({ error: "Not authorized" });
 
     const db = await dbConnect();
-    const users = await User.find().select('-password');
+    const users = await db.collection('users').find().toArray();
     
     return res.json({ data: users });
   } catch (error) {
