@@ -11,6 +11,7 @@ export default async function handler(req, res) {
 
     const db = await dbConnect();
     const users = await User.find().select('-password');
+    
     return res.json({ data: users });
   } catch (error) {
     console.error('Admin Users API Error:', error);

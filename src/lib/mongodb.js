@@ -13,12 +13,20 @@ const options = {
 let client;
 let clientPromise;
 
-export async function dbConnect() {
-  if (!client) {
+if (process.env.NODE_ENV === 'development') {
+  if (!global._mongoClientPromise) {
     client = new MongoClient(uri, options);
-    clientPromise = await client.connect();
+    global._mongoClientPromise = client.connect();
   }
-  return clientPromise.db(process.env.MONGODB_DB);
+  clientPromise = global._mongoClientPromise;
+} else {
+  client = new MongoClient(uri, options);
+  clientPromise = client.connect();
 }
+
+export const dbConnect = async () => {
+  const client = await clientPromise;
+  return client.db(process.env.MONGODB_DB);
+};
 
 export default clientPromise;
