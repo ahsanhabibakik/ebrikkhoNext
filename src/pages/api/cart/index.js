@@ -1,61 +1,63 @@
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 import { dbConnect } from "@/lib/mongodb";
 import Cart from "@/models/Cart";
-import jwt from "jsonwebtoken";
-
-function getUserIdFromReq(req) {
-  const auth = req.headers.authorization;
-  if (!auth) return null;
-  try {
-    const token = auth.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded.id;
-  } catch {
-    return null;
-  }
-}
 
 export default async function handler(req, res) {
-  await dbConnect();
-  const userId = getUserIdFromReq(req);
-  if (!userId) return res.status(401).json({ error: "Unauthorized" });
+  try {
+    // Connect to MongoDB
+    await dbConnect();
 
-  if (req.method === "GET") {
-    const cart = await Cart.findOne({ userId }) || { items: [] };
-    return res.json({ data: { items: cart.items } });
-  }
+    // Check session (but don't require it)
+    const session = await getServerSession(req, res, authOptions);
 
-  if (req.method === "POST") {
-    const { productId, name, price, quantity, image } = req.body;
-    let cart = await Cart.findOne({ userId });
-    if (!cart) cart = await Cart.create({ userId, items: [] });
-    const idx = cart.items.findIndex((i) => i.productId === productId);
-    if (idx > -1) {
-      cart.items[idx].quantity += quantity;
-    } else {
-      cart.items.push({ productId, name, price, quantity, image });
+    if (req.method === "GET") {
+      if (!session) {
+        // Guest user - return empty cart
+        return res.json({ data: { items: [] } });
+      }
+
+      // Get user's cart from DB
+      const cart = await Cart.findOne({ userId: session.user.id });
+      return res.json({ data: { items: cart?.items || [] } });
     }
-    await cart.save();
-    return res.json({ data: { items: cart.items } });
-  }
 
-  if (req.method === "PUT") {
-    const { productId, quantity } = req.body;
-    let cart = await Cart.findOne({ userId });
-    if (!cart) return res.status(404).json({ error: "Cart not found" });
-    const idx = cart.items.findIndex((i) => i.productId === productId);
-    if (idx > -1) {
-      cart.items[idx].quantity = quantity;
+    if (req.method === "POST") {
+      const { productId, quantity } = req.body;
+
+      if (!session) {
+        // Guest user - return success but let client handle storage
+        return res.json({ data: { items: [] } });
+      }
+
+      // Get or create user's cart
+      let cart = await Cart.findOne({ userId: session.user.id });
+      if (!cart) {
+        cart = new Cart({ userId: session.user.id, items: [] });
+      }
+
+      // Update cart items
+      const existingItem = cart.items.find(
+        (item) => item.productId.toString() === productId
+      );
+
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        cart.items.push({ productId, quantity });
+      }
+
       await cart.save();
       return res.json({ data: { items: cart.items } });
-    } else {
-      return res.status(404).json({ error: "Product not found in cart" });
     }
-  }
 
-  if (req.method === "DELETE") {
-    await Cart.findOneAndUpdate({ userId }, { items: [] });
-    return res.json({ data: { items: [] } });
+    return res.status(405).json({ error: "Method not allowed" });
+  } catch (error) {
+    console.error("Cart API Error:", error);
+    return res.status(500).json({
+      error: "Server error",
+      message:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
-
-  res.status(405).end();
 }

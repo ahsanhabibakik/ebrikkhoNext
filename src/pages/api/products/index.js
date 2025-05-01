@@ -27,7 +27,15 @@ export default async function handler(req, res) {
     if (!decoded) return res.status(401).json({ error: "Unauthorized" });
     // Optionally check isAdmin here
     const { name, price, description, image, category, stock, sku } = req.body;
-    const product = await Product.create({ name, price, description, image, category, stock, sku });
+    const product = await Product.create({
+      name,
+      price,
+      description,
+      image,
+      category,
+      stock,
+      sku,
+    });
     return res.status(201).json({ data: product });
   }
 

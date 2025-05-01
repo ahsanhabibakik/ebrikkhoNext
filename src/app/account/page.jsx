@@ -4,7 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBag, Heart, Bell, User, LogOut } from "lucide-react";
+import { ShoppingBag, Heart, Bell, User, LogOut, Shield } from "lucide-react";
 
 export default function AccountPage() {
   const { data: session, status } = useSession();
@@ -20,14 +20,26 @@ export default function AccountPage() {
   });
   const [recentOrders, setRecentOrders] = useState([]);
 
-  // Fetch profile from backend if JWT exists
+  const advancedRoles = ["admin", "superadmin", "ad", "management"];
+  const userRole = session?.user?.role;
+  const isAdmin = session?.user?.isAdmin === true;
+  const isAdvancedUser =
+    isAdmin || (userRole && advancedRoles.includes(userRole));
+
   useEffect(() => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (status === "unauthenticated") {
+      router.replace("/auth/login");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (session) {
       setProfile({
-        name: session.user.name,
-        email: session.user.email,
-        image: session.user.image,
+        name: session.user?.name || "User",
+        email: session.user?.email || "",
+        image: session.user?.image || "/default-avatar.png",
       });
       setLoading(false);
     } else if (token) {
@@ -46,16 +58,9 @@ export default function AccountPage() {
   }, [session]);
 
   useEffect(() => {
-    if (!loading && !profile) {
-      router.replace("/auth/login");
-    }
-  }, [loading, profile, router]);
-
-  useEffect(() => {
-    // Example: fetch stats and recent orders from backend
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("token") : null;
     if (profile) {
-      // Fetch stats
       fetch("/api/orders", {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -68,16 +73,20 @@ export default function AccountPage() {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
-        .then((data) => setStats((s) => ({ ...s, wishlist: data.data?.items?.length || 0 })));
+        .then((data) =>
+          setStats((s) => ({ ...s, wishlist: data.data?.items?.length || 0 }))
+        );
       fetch("/api/reminders", {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
-        .then((data) => setStats((s) => ({ ...s, reminders: data.data?.length || 0 })));
+        .then((data) =>
+          setStats((s) => ({ ...s, reminders: data.data?.length || 0 }))
+        );
     }
   }, [profile]);
 
-  if (loading || !profile) {
+  if (status === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
@@ -85,12 +94,18 @@ export default function AccountPage() {
     );
   }
 
+  if (!session) return null;
+
+  const userImage = session.user?.image || "/default-avatar.png";
+  const userName = session.user?.name || "User";
+  const userEmail = session.user?.email || "";
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow p-8">
         <div className="flex items-center gap-6 mb-8">
           <Image
-            src={profile.image || "/default-avatar.png"}
+            src={userImage}
             alt="Profile"
             width={64}
             height={64}
@@ -99,26 +114,45 @@ export default function AccountPage() {
           <div>
             <div className="font-bold text-xl text-orange-800 flex items-center gap-2">
               <User className="w-5 h-5" />
-              {profile.name}
+              {userName}
             </div>
-            <div className="text-gray-600">{profile.email}</div>
+            <div className="text-gray-600">{userEmail}</div>
           </div>
         </div>
+        {/* Admin Dashboard Button */}
+        {isAdvancedUser && (
+          <div className="mb-8 flex justify-center">
+            <Link
+              href="/admin"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-700 to-orange-500 text-white font-extrabold shadow-xl border-4 border-orange-900 hover:from-orange-800 hover:to-orange-600 transition text-lg uppercase tracking-wider"
+              style={{ letterSpacing: "0.1em" }}
+            >
+              <Shield className="w-6 h-6" />
+              Admin Dashboard
+            </Link>
+          </div>
+        )}
         {/* Dashboard Stats */}
         <div className="grid grid-cols-3 gap-6 mb-8">
           <div className="bg-orange-50 rounded-lg p-4 text-center">
             <ShoppingBag className="w-6 h-6 mx-auto text-orange-600 mb-2" />
-            <div className="text-2xl font-bold text-orange-800">{stats.orders}</div>
+            <div className="text-2xl font-bold text-orange-800">
+              {stats.orders}
+            </div>
             <div className="text-sm text-orange-700">Orders</div>
           </div>
           <div className="bg-orange-50 rounded-lg p-4 text-center">
             <Heart className="w-6 h-6 mx-auto text-orange-600 mb-2" />
-            <div className="text-2xl font-bold text-orange-800">{stats.wishlist}</div>
+            <div className="text-2xl font-bold text-orange-800">
+              {stats.wishlist}
+            </div>
             <div className="text-sm text-orange-700">Wishlist</div>
           </div>
           <div className="bg-orange-50 rounded-lg p-4 text-center">
             <Bell className="w-6 h-6 mx-auto text-orange-600 mb-2" />
-            <div className="text-2xl font-bold text-orange-800">{stats.reminders}</div>
+            <div className="text-2xl font-bold text-orange-800">
+              {stats.reminders}
+            </div>
             <div className="text-sm text-orange-700">Reminders</div>
           </div>
         </div>
@@ -149,22 +183,32 @@ export default function AccountPage() {
             className="flex flex-col items-center p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition"
           >
             <User className="w-7 h-7 text-orange-600 mb-2" />
-            <span className="font-medium text-orange-800">Profile Settings</span>
+            <span className="font-medium text-orange-800">
+              Profile Settings
+            </span>
           </Link>
         </div>
         {/* Recent Orders */}
         <div className="mb-8">
-          <h3 className="text-lg font-semibold text-orange-800 mb-2">Recent Orders</h3>
+          <h3 className="text-lg font-semibold text-orange-800 mb-2">
+            Recent Orders
+          </h3>
           {recentOrders.length === 0 ? (
             <div className="text-gray-500 text-sm">No recent orders.</div>
           ) : (
             <ul className="divide-y divide-orange-100">
               {recentOrders.map((order) => (
-                <li key={order._id} className="py-2 flex justify-between items-center">
+                <li
+                  key={order._id}
+                  className="py-2 flex justify-between items-center"
+                >
                   <span className="text-sm text-gray-700">
-                    Order #{order._id.slice(-6).toUpperCase()} - {order.items.length} items
+                    Order #{order._id.slice(-6).toUpperCase()} -{" "}
+                    {order.items.length} items
                   </span>
-                  <span className="text-xs text-orange-600">{order.status}</span>
+                  <span className="text-xs text-orange-600">
+                    {order.status}
+                  </span>
                 </li>
               ))}
             </ul>

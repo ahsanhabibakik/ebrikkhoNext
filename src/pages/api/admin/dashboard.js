@@ -3,6 +3,8 @@ import User from "@/models/User";
 import Order from "@/models/Order";
 import Product from "@/models/Product";
 import jwt from "jsonwebtoken";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
 function getUserIdFromReq(req) {
   const auth = req.headers.authorization;
@@ -18,12 +20,12 @@ function getUserIdFromReq(req) {
 
 export default async function handler(req, res) {
   await dbConnect();
-  const decoded = getUserIdFromReq(req);
-  if (!decoded) return res.status(401).json({ error: "Unauthorized" });
+  const session = await getServerSession(req, res, authOptions);
+  if (!session) return res.status(401).json({ error: "Unauthorized" });
 
-  // Only allow admin users
-  const user = await User.findById(decoded.id);
-  if (!user || !user.isAdmin) return res.status(403).json({ error: "Forbidden" });
+  const user = await User.findOne({ email: session.user.email });
+  if (!user || user.isAdmin !== true)
+    return res.status(403).json({ error: "Forbidden" });
 
   if (req.method === "GET") {
     // Total users
@@ -34,7 +36,7 @@ export default async function handler(req, res) {
     const totalProducts = await Product.countDocuments();
     // Total sales (sum of all order totals)
     const totalSales = await Order.aggregate([
-      { $group: { _id: null, total: { $sum: "$total" } } }
+      { $group: { _id: null, total: { $sum: "$total" } } },
     ]);
     // Recent orders
     const recentOrders = await Order.find().sort({ createdAt: -1 }).limit(5);
@@ -46,7 +48,7 @@ export default async function handler(req, res) {
         totalProducts,
         totalSales: totalSales[0]?.total || 0,
         recentOrders,
-      }
+      },
     });
   }
 

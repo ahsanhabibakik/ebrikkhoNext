@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, ChevronDown, X, Leaf } from "lucide-react";
+import { Menu, ChevronDown, X, Leaf, Shield } from "lucide-react";
 import { PiBasketThin } from "react-icons/pi";
 import { VscAccount } from "react-icons/vsc";
 import { BsSearch } from "react-icons/bs";
@@ -32,6 +32,25 @@ const categories = [
   { name: "Air Plants", href: "/categories/air-plants" },
 ];
 
+const handleLogout = async () => {
+  try {
+    // Clear any local storage data
+    localStorage.removeItem("nextauth.session");
+    localStorage.removeItem("cart");
+
+    // Sign out using NextAuth
+    await signOut({
+      redirect: false,
+      callbackUrl: "/auth/login",
+    });
+
+    // Force a complete page reload to clear all state
+    window.location.href = "/auth/login";
+  } catch (error) {
+    console.error("Logout error:", error);
+  }
+};
+
 export default function NavBar() {
   const [placeholder, setPlaceholder] = useState(placeholderTexts[0]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -47,15 +66,21 @@ export default function NavBar() {
   const isCartOpen = useAppSelector((state) => state.cart.isCartOpen);
 
   const { data: session } = useSession();
-  const isJwtLoggedIn = typeof window !== "undefined" && localStorage.getItem("token");
-  const userPhoto =
-    session?.user?.image ||
-    (typeof window !== "undefined" && localStorage.getItem("userPhoto")) ||
-    "/default-avatar.png"; // fallback
+  const userPhoto = session?.user?.image || "/default-avatar.png"; // fallback
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (session) {
+      console.log("Session Data:", {
+        user: session.user,
+        isAdmin: session.user?.isAdmin,
+        role: session.user?.role,
+      });
+    }
+  }, [session]);
 
   const getCartCount = () => {
     if (!mounted || !cartItems) return 0;
@@ -183,6 +208,7 @@ export default function NavBar() {
                 alt="Ebrikkho Logo"
                 width={80}
                 height={80}
+                priority
               />
             </Link>
           </div>
@@ -193,6 +219,7 @@ export default function NavBar() {
                 alt="Ebrikkho Logo"
                 width={80}
                 height={80}
+                priority
               />
             </Link>
           </div>
@@ -299,7 +326,7 @@ export default function NavBar() {
 
         {/* Right: Icons for desktop */}
         <div className="hidden md:flex items-center gap-2">
-          {(session || isJwtLoggedIn) ? (
+          {session ? (
             <div className="relative group">
               <button className="btn btn-ghost btn-circle flex items-center">
                 <Image
@@ -311,15 +338,35 @@ export default function NavBar() {
                 />
               </button>
               <div className="absolute right-0 mt-2 w-40 bg-white text-orange-900 rounded shadow-lg opacity-0 group-hover:opacity-100 transition pointer-events-auto z-50">
-                <Link href="/account" className="block px-4 py-2 hover:bg-orange-100">Profile</Link>
-                <Link href="/orders" className="block px-4 py-2 hover:bg-orange-100">Orders</Link>
+                <div className="px-4 py-2 border-b text-xs">
+                  {session?.user?.isAdmin ? "Admin User" : "Regular User"}
+                </div>
+                <Link
+                  href="/account"
+                  className="block px-4 py-2 hover:bg-orange-100"
+                >
+                  Profile
+                </Link>
+                <Link
+                  href="/orders"
+                  className="block px-4 py-2 hover:bg-orange-100"
+                >
+                  Orders
+                </Link>
+                {session?.user?.isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="block px-4 py-2 hover:bg-orange-100 text-orange-600 font-semibold flex items-center gap-2"
+                  >
+                    <Shield size={16} />
+                    Admin Dashboard
+                    <span className="text-xs bg-orange-100 px-1 rounded">
+                      {session.user.isAdmin ? "✓" : "✗"}
+                    </span>
+                  </Link>
+                )}
                 <button
-                  onClick={() => {
-                    if (session) signOut();
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("userPhoto");
-                    window.location.href = "/auth/login";
-                  }}
+                  onClick={handleLogout}
                   className="block w-full text-left px-4 py-2 hover:bg-orange-100"
                 >
                   Logout

@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { useCustomer } from "@/context/CustomerContext";
+import { useCustomer, CustomerProvider } from "@/context/CustomerContext";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { clearCart } from "@/redux/slices/cartSlice";
@@ -104,7 +104,7 @@ const checkoutSchema = z.object({
   paymentMethod: z.enum(["credit", "bkash", "nagad", "rocket"]),
 });
 
-export default function CheckoutPage() {
+function CheckoutPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
@@ -1238,5 +1238,13 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Checkout() {
+  return (
+    <CustomerProvider>
+      <CheckoutPage />
+    </CustomerProvider>
   );
 }

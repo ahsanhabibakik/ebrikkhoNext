@@ -47,13 +47,26 @@ export default function AuthForm({ mode = "login" }) {
       // --- Connect to backend API ---
       const endpoint =
         mode === "login"
-          ? `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/login`
-          : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/register`;
+          ? `${
+              process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+            }/api/auth/login`
+          : `${
+              process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+            }/api/auth/register`;
 
       const payload =
         mode === "login"
-          ? { email: formData.email, mobile: formData.mobile, password: formData.password }
-          : { name: formData.name, email: formData.email, mobile: formData.mobile, password: formData.password };
+          ? {
+              email: formData.email,
+              mobile: formData.mobile,
+              password: formData.password,
+            }
+          : {
+              name: formData.name,
+              email: formData.email,
+              mobile: formData.mobile,
+              password: formData.password,
+            };
 
       const res = await fetch(endpoint, {
         method: "POST",
@@ -81,7 +94,9 @@ export default function AuthForm({ mode = "login" }) {
       // dispatch(loginSuccess(userData.data));
 
       // For now, just dispatch loginSuccess with email/mobile
-      dispatch(loginSuccess({ email: formData.email, mobile: formData.mobile }));
+      dispatch(
+        loginSuccess({ email: formData.email, mobile: formData.mobile })
+      );
 
       router.push("/account");
     } catch (err) {
@@ -115,7 +130,9 @@ export default function AuthForm({ mode = "login" }) {
       <form onSubmit={handleSubmit} className="space-y-4">
         {mode === "register" && (
           <div>
-            <label className="text-xs font-medium text-orange-700">Full Name</label>
+            <label className="text-xs font-medium text-orange-700">
+              Full Name
+            </label>
             <div className="relative">
               <User className="absolute left-3 top-2.5 h-4 w-4 text-orange-300" />
               <input
@@ -133,7 +150,9 @@ export default function AuthForm({ mode = "login" }) {
 
         {!useEmail ? (
           <div>
-            <label className="text-xs font-medium text-orange-700">Mobile Number</label>
+            <label className="text-xs font-medium text-orange-700">
+              Mobile Number
+            </label>
             <div className="relative">
               <Phone className="absolute left-3 top-2.5 h-4 w-4 text-orange-300" />
               <input
@@ -180,7 +199,9 @@ export default function AuthForm({ mode = "login" }) {
         )}
 
         <div>
-          <label className="text-xs font-medium text-orange-700">Password</label>
+          <label className="text-xs font-medium text-orange-700">
+            Password
+          </label>
           <div className="relative">
             <Lock className="absolute left-3 top-2.5 h-4 w-4 text-orange-300" />
             <input
@@ -208,7 +229,9 @@ export default function AuthForm({ mode = "login" }) {
 
         {mode === "register" && (
           <div>
-            <label className="text-xs font-medium text-orange-700">Confirm Password</label>
+            <label className="text-xs font-medium text-orange-700">
+              Confirm Password
+            </label>
             <div className="relative">
               <Lock className="absolute left-3 top-2.5 h-4 w-4 text-orange-300" />
               <input
@@ -253,7 +276,11 @@ export default function AuthForm({ mode = "login" }) {
           disabled={loading}
           className="w-full bg-orange-600 text-white py-2 px-4 rounded hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? "Processing..." : mode === "login" ? "Sign In" : "Create Account"}
+          {loading
+            ? "Processing..."
+            : mode === "login"
+            ? "Sign In"
+            : "Create Account"}
         </button>
       </form>
       <div className="mt-4 text-center">

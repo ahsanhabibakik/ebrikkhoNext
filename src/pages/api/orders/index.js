@@ -1,23 +1,14 @@
 import { dbConnect } from "@/lib/mongodb";
 import Order from "@/models/Order";
-import jwt from "jsonwebtoken";
-
-function getUserIdFromReq(req) {
-  const auth = req.headers.authorization;
-  if (!auth) return null;
-  try {
-    const token = auth.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded.id;
-  } catch {
-    return null;
-  }
-}
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
 export default async function handler(req, res) {
   await dbConnect();
-  const userId = getUserIdFromReq(req);
-  if (!userId) return res.status(401).json({ error: "Unauthorized" });
+  const session = await getServerSession(req, res, authOptions);
+  if (!session) return res.status(401).json({ error: "Unauthorized" });
+
+  const userId = session.user.id;
 
   if (req.method === "POST") {
     const { items, total, shippingAddress } = req.body;

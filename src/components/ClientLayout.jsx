@@ -6,9 +6,7 @@ import { store } from "@/redux/store";
 export default function ClientLayout({ children }) {
   return (
     <Provider store={store}>
-      <SessionProvider>
-        {children}
-      </SessionProvider>
+      <SessionProvider>{children}</SessionProvider>
     </Provider>
   );
 }

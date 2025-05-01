@@ -34,7 +34,10 @@ export default function CheckoutForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="name"
+          className="block text-sm font-medium text-gray-700"
+        >
           Name
         </label>
         <input
@@ -48,7 +51,10 @@ export default function CheckoutForm() {
         />
       </div>
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700"
+        >
           Email
         </label>
         <input
@@ -62,7 +68,10 @@ export default function CheckoutForm() {
         />
       </div>
       <div>
-        <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="address"
+          className="block text-sm font-medium text-gray-700"
+        >
           Address
         </label>
         <input
@@ -76,7 +85,10 @@ export default function CheckoutForm() {
         />
       </div>
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="phone"
+          className="block text-sm font-medium text-gray-700"
+        >
           Phone
         </label>
         <input

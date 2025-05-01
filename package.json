@@ -9,12 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/mongodb-adapter": "^3.9.0",
     "@headlessui/react": "^2.2.2",
     "@hookform/resolvers": "^5.0.1",
     "@reduxjs/toolkit": "^2.7.0",
     "framer-motion": "^12.9.2",
+    "jsonwebtoken": "^9.0.2",
     "jspdf": "^3.0.1",
     "lucide-react": "^0.501.0",
+    "mongodb": "^6.16.0",
+    "mongoose": "^8.14.1",
     "next": "^15.3.0",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",

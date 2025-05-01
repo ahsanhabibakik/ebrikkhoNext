@@ -96,6 +96,7 @@ export default function Footer() {
                 alt="Ebrikkho Logo"
                 width={80}
                 height={80}
+                priority
               />
             </Link>
             <p className="text-orange-100 max-w-md">
