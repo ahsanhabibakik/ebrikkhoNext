@@ -101,9 +101,9 @@ export default function PrivacyPolicy() {
                 If you have any questions about this Privacy Policy, please
                 contact us at:
                 <br />
-                Email: privacy@ebrikkho.com
+                Email: ebrikkho2024@gmail.com
                 <br />
-                Phone: +880 1234-567890
+                Phone: +880 1518926700
               </p>
             </section>
           </div>
