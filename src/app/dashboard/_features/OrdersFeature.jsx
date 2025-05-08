@@ -33,9 +33,7 @@ export default function OrdersFeature() {
     })
       .then((r) => r.json())
       .then((updated) => {
-        setOrders((prev) =>
-          prev.map((o) => (o._id === id ? updated : o))
-        );
+        setOrders((prev) => prev.map((o) => (o._id === id ? updated : o)));
       });
   }
 
@@ -62,7 +60,10 @@ export default function OrdersFeature() {
     <Card className="p-4 mb-8">
       <h2 className="text-xl font-bold mb-4">Orders</h2>
       {editing && (
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 mb-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col sm:flex-row gap-2 mb-4"
+        >
           <input
             className="border rounded px-2 py-1"
             placeholder="Status"
@@ -71,7 +72,11 @@ export default function OrdersFeature() {
             required
           />
           <Button type="submit">Update</Button>
-          <Button type="button" variant="ghost" onClick={() => setEditing(null)}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setEditing(null)}
+          >
             Cancel
           </Button>
         </form>
@@ -92,13 +97,25 @@ export default function OrdersFeature() {
               <td>{o.status}</td>
               <td>{o.total}</td>
               <td className="flex gap-2 justify-end py-1">
-                <Button size="sm" variant="outline" onClick={() => handleEdit(o)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleEdit(o)}
+                >
                   Edit
                 </Button>
-                <Button size="sm" variant="secondary" onClick={() => handleApprove(o._id)}>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => handleApprove(o._id)}
+                >
                   Approve
                 </Button>
-                <Button size="sm" variant="destructive" onClick={() => handleDelete(o._id)}>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => handleDelete(o._id)}
+                >
                   Delete
                 </Button>
               </td>

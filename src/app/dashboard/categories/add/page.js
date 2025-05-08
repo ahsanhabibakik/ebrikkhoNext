@@ -27,7 +27,7 @@ export default function AddCategoryPage() {
           className="input input-bordered"
           placeholder="Category Name"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           required
         />
         <button className="btn btn-primary" disabled={loading}>

@@ -27,7 +27,7 @@ export default function AddProductPage() {
           className="input input-bordered"
           placeholder="Product Name"
           value={form.name}
-          onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
           required
         />
         <input
@@ -35,7 +35,7 @@ export default function AddProductPage() {
           placeholder="Price"
           type="number"
           value={form.price}
-          onChange={e => setForm(f => ({ ...f, price: e.target.value }))}
+          onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
           required
         />
         <input
@@ -43,7 +43,7 @@ export default function AddProductPage() {
           placeholder="Stock"
           type="number"
           value={form.stock}
-          onChange={e => setForm(f => ({ ...f, stock: e.target.value }))}
+          onChange={(e) => setForm((f) => ({ ...f, stock: e.target.value }))}
           required
         />
         <button className="btn btn-primary" disabled={loading}>

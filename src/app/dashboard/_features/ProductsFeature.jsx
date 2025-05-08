@@ -58,7 +58,10 @@ export default function ProductsFeature() {
   return (
     <Card className="p-4 mb-8">
       <h2 className="text-xl font-bold mb-4">Products</h2>
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 mb-4">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col sm:flex-row gap-2 mb-4"
+      >
         <input
           className="border rounded px-2 py-1"
           placeholder="Name"
@@ -84,7 +87,11 @@ export default function ProductsFeature() {
         />
         <Button type="submit">{editing ? "Update" : "Add"}</Button>
         {editing && (
-          <Button type="button" variant="ghost" onClick={() => setEditing(null)}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setEditing(null)}
+          >
             Cancel
           </Button>
         )}
@@ -105,10 +112,18 @@ export default function ProductsFeature() {
               <td>{p.price}</td>
               <td>{p.stock}</td>
               <td className="flex gap-2 justify-end py-1">
-                <Button size="sm" variant="outline" onClick={() => handleEdit(p)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleEdit(p)}
+                >
                   Edit
                 </Button>
-                <Button size="sm" variant="destructive" onClick={() => handleDelete(p._id)}>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => handleDelete(p._id)}
+                >
                   Delete
                 </Button>
               </td>
