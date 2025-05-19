@@ -47,6 +47,47 @@ const CategorySlider = () => {
       link: "/urban-green",
       color: "bg-teal-100",
     },
+    {
+      id: 6,
+      title: "Indoor Plants",
+      image:
+        "https://images.unsplash.com/photo-1485955900006-10f4d324d411?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+      link: "/indoor-plants",
+      color: "bg-green-100",
+    },
+    {
+      id: 7,
+      title: "Outdoor Plants",
+      image:
+        "https://images.unsplash.com/photo-1466781783364-36c955e42a7f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+      link: "/outdoor-plants",
+      color: "bg-blue-100",
+    },
+    {
+      id: 8,
+      title: "Gardening Kits",
+      image:
+        "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+      link: "/gardening-kits",
+      color: "bg-amber-100",
+    },
+    {
+      id: 9,
+      title: "Sustainable Gifts",
+      image:
+        "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+      link: "/sustainable-gifts",
+      color: "bg-purple-100",
+    },
+    {
+      id: 10,
+      title: "Urban Green",
+      image:
+        "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+      link: "/urban-green",
+      color: "bg-teal-100",
+    },
+   
   ];
 
   return (
@@ -58,7 +99,7 @@ const CategorySlider = () => {
         <div className="relative mx-auto max-w-full overflow-hidden">
           <div
             ref={scrollContainerRef}
-            className="flex overflow-x-auto pb-4 gap-4 md:gap-6 snap-x snap-mandatory hide-scrollbar justify-center md:justify-start"
+            className="flex overflow-x-auto pb-4 gap-4 md:gap-6 snap-x snap-mandatory hide-scrollbar mx-auto justify-center items-center"
             style={{
               WebkitOverflowScrolling: "touch",
               scrollBehavior: "smooth",
