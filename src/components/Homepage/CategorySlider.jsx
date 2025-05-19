@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -87,7 +88,6 @@ const CategorySlider = () => {
       link: "/urban-green",
       color: "bg-teal-100",
     },
-   
   ];
 
   return (
