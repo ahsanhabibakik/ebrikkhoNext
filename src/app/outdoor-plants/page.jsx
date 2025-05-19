@@ -65,6 +65,34 @@ export default function OutdoorPlantsPage() {
       image: "/images/products/tomato.jpg",
       link: "/products/tomato-plant",
     },
+    {
+      id: 5,
+      name: "Hydrangea",
+      price: 44.99,
+      image: "/images/products/hydrangea.jpg",
+      link: "/products/hydrangea",
+    },
+    {
+      id: 6,
+      name: "Japanese Maple",
+      price: 79.99,
+      image: "/images/products/japanese-maple.jpg",
+      link: "/products/japanese-maple",
+    },
+    {
+      id: 7,
+      name: "Lavender",
+      price: 24.99,
+      image: "/images/products/lavender.jpg",
+      link: "/products/lavender",
+    },
+    {
+      id: 8,
+      name: "Tomato Plant",
+      price: 19.99,
+      image: "/images/products/tomato.jpg",
+      link: "/products/tomato-plant",
+    },
   ];
 
   return (
