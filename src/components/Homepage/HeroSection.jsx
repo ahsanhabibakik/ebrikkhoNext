@@ -115,7 +115,7 @@ export default function HeroSection() {
     <div className="relative">
       {/* Hero Slider */}
       <div
-        className="relative h-[50vh] sm:h-[60vh] md:h-[70vh] overflow-hidden select-none"
+        className="mt-2 relative h-[50vh] sm:h-[60vh] md:h-[70vh] overflow-hidden select-none rounded-lg"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}

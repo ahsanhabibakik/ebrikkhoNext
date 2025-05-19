@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="icon" type="image/png" href="/fav.png" />
       </head>
-      <body className={inter.className}>
+      <body className={inter.className} suppressHydrationWarning>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

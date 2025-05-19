@@ -16,7 +16,7 @@ export default function CTASection() {
   ];
 
   return (
-    <section className="py-16 bg-orange-600 text-white relative overflow-hidden">
+    <section className="rounded-lg py-16 bg-orange-600 text-white relative overflow-hidden">
       <LeafPattern
         opacity={15}
         leafSizes={{

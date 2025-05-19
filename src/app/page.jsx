@@ -20,7 +20,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen max-w-screen-xl mx-auto mb-10 bg-white">
       <HeroSection />
       <CategorySlider />
       <div className="mt-0">

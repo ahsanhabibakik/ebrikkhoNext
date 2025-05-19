@@ -41,7 +41,7 @@ const PlantCareSection = () => {
   ];
 
   return (
-    <section className="py-8 md:py-12 bg-gradient-to-b from-green-50 to-white">
+    <section className="rounded-lg py-8 md:py-12 bg-gradient-to-b from-green-50 to-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
