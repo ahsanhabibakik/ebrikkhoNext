@@ -107,7 +107,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="bg-orange-800 text-white shadow sticky top-0 z-50 relative">
+    <nav className="bg-orange-800 text-white shadow sticky  top-0 z-50 ">
       {/* Enhanced decorative leaf pattern */}
       <div className="absolute top-0 left-0 w-full h-full opacity-10">
         {/* Top row of leaves */}
@@ -153,7 +153,7 @@ export default function NavBar() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex flex-col md:flex-row items-center justify-between gap-2 relative z-10">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2 flex flex-col md:flex-row items-center  justify-between gap-2 relative z-10">
         {/* Top row for mobile: Logo and icons */}
         <div className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2 relative">
           {/* Left: Logo & menu */}
@@ -177,7 +177,7 @@ export default function NavBar() {
               />
             </Link>
           </div>
-          <div className="hidden md:flex items-center">
+          <div className="hidden mb-4 md:flex items-center">
             <Link href="/" className="flex items-center">
               <Image
                 src="/logo.png"
