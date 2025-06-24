@@ -65,7 +65,7 @@ export default function UsersFeature() {
             onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}
             required
           >
-            <option value="">Select role</option>
+            <option value="select-role">Select role</option>
             <option value="admin">Admin</option>
             <option value="manager">Manager</option>
             <option value="customer">Customer</option>
