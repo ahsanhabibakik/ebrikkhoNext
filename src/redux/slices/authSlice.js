@@ -2,6 +2,16 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Load initial state from localStorage if available
 const loadState = () => {
+  if (typeof window === "undefined") {
+    return {
+      user: null,
+      isAuthenticated: false,
+      loading: false,
+      error: null,
+      customerInfo: null,
+    };
+  }
+
   try {
     const serializedState = localStorage.getItem("auth");
     if (serializedState === null) {

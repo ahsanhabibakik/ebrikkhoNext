@@ -32,23 +32,44 @@ import { products } from "@/data/products";
 import { useRouter } from "next/navigation";
 
 export default function CartSidebar() {
-  const dispatch = useAppDispatch();
-  const cartItems = useAppSelector((state) => state.cart.items);
-  const savedForLater = useAppSelector((state) => state.cart.savedForLater);
-  const isCartOpen = useAppSelector((state) => state.cart.isCartOpen);
-  const cartTotal = useAppSelector((state) => state.cart.total);
-  const shippingCost = useAppSelector((state) => state.cart.shippingCost);
-  const discount = useAppSelector((state) => state.cart.discount);
-  const couponCode = useAppSelector((state) => state.cart.couponCode);
-
+  const [isClient, setIsClient] = useState(false);
   const [inputCouponCode, setInputCouponCode] = useState("");
   const [freeShippingThreshold] = useState(5000); // Free shipping above 5000 BDT
   const [showAddedToCart, setShowAddedToCart] = useState({});
 
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart?.items || []);
+  const savedForLater = useAppSelector((state) => state.cart?.savedForLater || []);
+  const isCartOpen = useAppSelector((state) => state.cart?.isCartOpen || false);
+  const cartTotal = useAppSelector((state) => state.cart?.total || 0);
+  const shippingCost = useAppSelector((state) => state.cart?.shippingCost || 0);
+  const discount = useAppSelector((state) => state.cart?.discount || 0);
+  const couponCode = useAppSelector((state) => state.cart?.couponCode || "");
+
   const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    // Calculate shipping cost based on cart total
+    if (cartTotal >= freeShippingThreshold) {
+      dispatch(setShippingCostAction(0));
+    } else {
+      dispatch(setShippingCostAction(100)); // Standard shipping cost
+    }
+  }, [cartTotal, freeShippingThreshold, dispatch]);
+
+  // Don't render on server side - but maintain component structure
+  if (!isClient) {
+    return <div style={{ display: 'none' }} />;
+  }
 
   // Get related products based on cart items
   const getRelatedProducts = () => {
+    if (!cartItems || cartItems.length === 0) return [];
+    
     const categories = [...new Set(cartItems.map((item) => item.category))];
     return products
       .filter(
@@ -60,15 +81,6 @@ export default function CartSidebar() {
   };
 
   const relatedProducts = getRelatedProducts();
-
-  useEffect(() => {
-    // Calculate shipping cost based on cart total
-    if (cartTotal >= freeShippingThreshold) {
-      dispatch(setShippingCostAction(0));
-    } else {
-      dispatch(setShippingCostAction(100)); // Standard shipping cost
-    }
-  }, [cartTotal, freeShippingThreshold, dispatch]);
 
   const applyCoupon = () => {
     // Simple coupon logic - you can enhance this
@@ -101,20 +113,23 @@ export default function CartSidebar() {
 
   return (
     <>
-      {/* Overlay with blur effect */}
-      {isCartOpen && (
-        <div
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[998] transition-opacity duration-300"
-          onClick={() => dispatch(toggleCart())}
-        />
-      )}
+      {/* Only render if on client side */}
+      {isClient && (
+        <>
+          {/* Overlay with blur effect */}
+          {isCartOpen && (
+            <div
+              className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[998] transition-opacity duration-300"
+              onClick={() => dispatch(toggleCart())}
+            />
+          )}
 
-      {/* Sidebar */}
-      <div
-        className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-xl transform transition-all duration-300 ease-in-out z-[999] ${
-          isCartOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
+          {/* Sidebar */}
+          <div
+            className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-xl transform transition-all duration-300 ease-in-out z-[999] ${
+              isCartOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
         <div className="h-full flex flex-col">
           {/* Header with gradient background */}
           <div className="p-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white flex justify-between items-center">
@@ -398,6 +413,8 @@ export default function CartSidebar() {
           )}
         </div>
       </div>
+        </>
+      )}
     </>
   );
 }

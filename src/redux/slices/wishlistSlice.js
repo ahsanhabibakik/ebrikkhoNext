@@ -2,6 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Load initial state from localStorage
 const loadState = () => {
+  if (typeof window === "undefined") {
+    return {
+      items: [],
+      loading: false,
+      error: null,
+    };
+  }
+
   try {
     const serializedState = localStorage.getItem("wishlist");
     if (serializedState === null) {

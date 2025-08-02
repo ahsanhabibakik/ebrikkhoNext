@@ -2,6 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Load initial state from localStorage
 const loadState = () => {
+  if (typeof window === "undefined") {
+    return {
+      reminders: [],
+    };
+  }
+
   try {
     const serializedState = localStorage.getItem("reminders");
     if (serializedState === null) {
